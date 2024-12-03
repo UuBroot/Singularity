@@ -11,6 +11,8 @@ def convert(format, filepath):
     
     if os.path.isfile(filepath):
         
+        print("using module "+str(getModuleToUse(getFileType(filepath))).split('.')[1]+" ...")
+
         match(getModuleToUse(getFileType(filepath))):
             case ModuleToUse.IMGMAG:
                 convImgMag(filepath, format)
