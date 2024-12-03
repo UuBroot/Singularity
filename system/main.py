@@ -10,6 +10,11 @@ class ModuleToUse(Enum):
 def convert(format, filepath):
     
     if os.path.isfile(filepath):
+
+        if getModuleToUse(getFileType(filepath)) != getModuleToUse(format):
+            print("wrong combination of file used and format to convert to || module for file:"+str(getModuleToUse(getFileType(filepath))).split('.')[1]+" != module for conversion: "+str(getModuleToUse(format)))
+            return
+        
         print("using module "+str(getModuleToUse(getFileType(filepath))).split('.')[1]+" ...")
 
         match(getModuleToUse(getFileType(filepath))):
