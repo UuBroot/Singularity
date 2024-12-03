@@ -1,10 +1,10 @@
 import os
 from enum import Enum
-from system.modules.imagemagicModule import convert as convImgMag
+from system.modules.module_pillow import convert as convImg
 import filetype
 
 class ModuleToUse(Enum):
-    IMGMAG = "imagemagic"
+    PILLOW = "pillow"
     FFMPEG = "ffmpeg"
     
 def convert(format, filepath):
@@ -18,8 +18,8 @@ def convert(format, filepath):
         print("using module "+str(getModuleToUse(getFileType(filepath))).split('.')[1]+" ...")
 
         match(getModuleToUse(getFileType(filepath))):
-            case ModuleToUse.IMGMAG:
-                convImgMag(filepath, format)
+            case ModuleToUse.PILLOW:
+                convImg(filepath, format)
             case _:
                 print("novalid")
         
@@ -34,8 +34,8 @@ def getFileType(path):
 def getModuleToUse(format):
     match(format):
         case "png":
-            return ModuleToUse.IMGMAG
+            return ModuleToUse.PILLOW
         case "jpg":
-            return ModuleToUse.IMGMAG
+            return ModuleToUse.PILLOW
         case "jpeg":
-            return ModuleToUse.IMGMAG
+            return ModuleToUse.PILLOW
