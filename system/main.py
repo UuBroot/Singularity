@@ -3,8 +3,8 @@ from enum import Enum
 import filetype
 
 ### Pillow ###
-from system.modules.module_pillow import convert as convImg
-from system.modules.module_pillow import formatSupported as imageFormatSupported  
+from system.modules.module_pillow import Pillow
+module_pillow = Pillow()
 ### FFMPEG ###
 supportedVideoFormats = (
     "mp4"
@@ -34,7 +34,7 @@ def convert(pathToFile, pathToOutput):
         
         match(getModuleToUse(getFileType(pathToFile))):
             case ModuleToUse.PILLOW:
-                convImg(pathToFile, pathToOutput)
+                module_pillow.convert(pathToFile, pathToOutput)
             case _:
                 print("novalid")
         
@@ -47,7 +47,7 @@ def getFileType(path):
     return os.path.splitext(os.path.basename(path))[1][1:]
 
 def getModuleToUse(format):
-    if imageFormatSupported(format):
+    if module_pillow.formatSupported(format):
         return ModuleToUse.PILLOW
     elif supportedVideoFormats.__contains__(format):
         return ModuleToUse.FFMPEG
