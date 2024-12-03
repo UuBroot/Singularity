@@ -20,7 +20,6 @@ class ModuleToUse(Enum):
     FFMPEG = "ffmpeg"
     
 def convert(format, filepath):
-    format = supportedImageFormats[supportedImageFormats.__len__()-1]
     
     if os.path.isfile(filepath):
 
