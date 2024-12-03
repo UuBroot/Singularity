@@ -1,13 +1,26 @@
 import os
 from enum import Enum
-from system.modules.module_pillow import convert as convImg
 import filetype
+from system.modules.module_pillow import convert as convImg
+
+#######################
+## Supported Formats ##
+#######################
+### Pillow ###
+supportedImageFormats = (
+    "png", "jpg", "jpeg", "bmp", "dds", "dib", "pcx", "ps", "eps", "gif", "apng", "jp2", "j2k", "jpc", "jpf", "jpx", "j2c", "icns", "ico", "im", "jfif", "jpe", "tif", "tiff", "pbm", "pgm", "ppm", "pnm", "pfm", "bw", "rgb", "rgba", "sgi", "tga", "icb", "vda", "vst", "webp"
+)
+### FFMPEG ###
+supportedVideoFormats = (
+    "mp4"
+)
 
 class ModuleToUse(Enum):
     PILLOW = "pillow"
     FFMPEG = "ffmpeg"
     
 def convert(format, filepath):
+    format = supportedImageFormats[supportedImageFormats.__len__()-1]
     
     if os.path.isfile(filepath):
 
@@ -32,10 +45,7 @@ def getFileType(path):
     return os.path.splitext(os.path.basename(path))[1][1:]
 
 def getModuleToUse(format):
-    match(format):
-        case "png":
-            return ModuleToUse.PILLOW
-        case "jpg":
-            return ModuleToUse.PILLOW
-        case "jpeg":
-            return ModuleToUse.PILLOW
+    if supportedImageFormats.__contains__(format):
+        return ModuleToUse.PILLOW
+    elif supportedVideoFormats.__contains__(format):
+        return ModuleToUse.FFMPEG
