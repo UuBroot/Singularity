@@ -10,7 +10,6 @@ class ModuleToUse(Enum):
 def convert(format, filepath):
     
     if os.path.isfile(filepath):
-        
         print("using module "+str(getModuleToUse(getFileType(filepath))).split('.')[1]+" ...")
 
         match(getModuleToUse(getFileType(filepath))):
@@ -18,12 +17,14 @@ def convert(format, filepath):
                 convImgMag(filepath, format)
             case _:
                 print("novalid")
+        
+        print("saved as export."+format)
+        
     else:
         print("not a valid file")
     
 def getFileType(path):
     return os.path.splitext(os.path.basename(path))[1][1:]
-
 
 def getModuleToUse(format):
     match(format):
