@@ -1,6 +1,6 @@
 import os
 from enum import Enum
-
+import sys
 ### Pillow ###
 from system.modules.module_pillow import Pillow
 module_pillow = Pillow()
@@ -14,26 +14,25 @@ class ModuleToUse(Enum):
     
 def convert(pathToFile, pathToOutput):
     
-    formatToConvertTo = str(pathToOutput).split("/")[-1].split(".")[-1]
+    formatToConvertTo = getFileType(pathToOutput)
+    formatOfFile = getFileType(pathToFile)
 
     if os.path.isfile(pathToFile):
 
         # Checks if the input and output files use the same module
-        if getModuleToUse(getFileType(pathToFile)) != getModuleToUse(formatToConvertTo) or getModuleToUse(getFileType(pathToFile)) == None:
-            if getModuleToUse(getFileType(pathToFile)) == "":
+        if getModuleToUse(formatOfFile) != getModuleToUse(formatToConvertTo) or getModuleToUse(formatOfFile) == None:
+            if getModuleToUse(formatOfFile) == "":
                 print("input file has unsupported format")
             elif getModuleToUse(formatToConvertTo) == "":
                 print("output format is not supported")
             else:
-                print("wrong combination of file used and format to convert to || module for file:"+str(getModuleToUse(getFileType(pathToFile))).split('.')[1]+" != module for conversion: "+str(getModuleToUse(formatToConvertTo)))
-            return
+                print("wrong combination of file used and format to convert to \n----\nmodule for "+formatOfFile+":"+str(getModuleToUse(formatOfFile)).split('.')[1]+" != module for "+formatToConvertTo+": "+str(getModuleToUse(formatToConvertTo)))
+            sys.exit(1)
         
-        print("using module "+str(getModuleToUse(getFileType(pathToFile))).split('.')[1]+" ...")
+        print("using module "+str(getModuleToUse(formatOfFile)).split('.')[1]+" ...")
         
-        match(getModuleToUse(getFileType(pathToFile))):
+        match(getModuleToUse(formatOfFile)):
             case ModuleToUse.PILLOW:
-                if codec != "":
-                    print("codec conversion not supported")
                 module_pillow.convert(pathToFile, pathToOutput)
             case ModuleToUse.FFMPEG:
                 moduel_ffmpeg.convert(pathToFile, pathToOutput)
