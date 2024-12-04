@@ -5,15 +5,14 @@ from enum import Enum
 from system.modules.module_pillow import Pillow
 module_pillow = Pillow()
 ### FFMPEG ###
-supportedVideoFormats = (
-    "mp4"
-)
+from system.modules.module_ffmpeg import FFMPEG
+moduel_ffmpeg = FFMPEG()
 
 class ModuleToUse(Enum):
     PILLOW = "pillow"
     FFMPEG = "ffmpeg"
     
-def convert(pathToFile, pathToOutput, codec:str=None):
+def convert(pathToFile, pathToOutput):
     
     formatToConvertTo = str(pathToOutput).split("/")[-1].split(".")[-1]
 
@@ -21,11 +20,11 @@ def convert(pathToFile, pathToOutput, codec:str=None):
 
         # Checks if the input and output files use the same module
         if getModuleToUse(getFileType(pathToFile)) != getModuleToUse(formatToConvertTo) or getModuleToUse(getFileType(pathToFile)) == None:
-            if getModuleToUse(getFileType(pathToFile)) == None:
+            if getModuleToUse(getFileType(pathToFile)) == "":
                 print("input file has unsupported format")
-            elif getModuleToUse(formatToConvertTo) == None:
+            elif getModuleToUse(formatToConvertTo) == "":
                 print("output format is not supported")
-            else: 
+            else:
                 print("wrong combination of file used and format to convert to || module for file:"+str(getModuleToUse(getFileType(pathToFile))).split('.')[1]+" != module for conversion: "+str(getModuleToUse(formatToConvertTo)))
             return
         
@@ -33,7 +32,11 @@ def convert(pathToFile, pathToOutput, codec:str=None):
         
         match(getModuleToUse(getFileType(pathToFile))):
             case ModuleToUse.PILLOW:
+                if codec != "":
+                    print("codec conversion not supported")
                 module_pillow.convert(pathToFile, pathToOutput)
+            case ModuleToUse.FFMPEG:
+                moduel_ffmpeg.convert(pathToFile, pathToOutput)
             case _:
                 print("novalid")
         
@@ -48,5 +51,5 @@ def getFileType(path):
 def getModuleToUse(format):
     if module_pillow.formatSupported(format):
         return ModuleToUse.PILLOW
-    elif supportedVideoFormats.__contains__(format):
+    elif moduel_ffmpeg.formatSupported(format):
         return ModuleToUse.FFMPEG
