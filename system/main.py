@@ -13,7 +13,7 @@ class ModuleToUse(Enum):
     PILLOW = "pillow"
     FFMPEG = "ffmpeg"
     
-def convert(pathToFile, pathToOutput):
+def convert(pathToFile, pathToOutput, codec:str=None):
     
     formatToConvertTo = str(pathToOutput).split("/")[-1].split(".")[-1]
 
