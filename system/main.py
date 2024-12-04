@@ -1,6 +1,5 @@
 import os
 from enum import Enum
-import filetype
 
 ### Pillow ###
 from system.modules.module_pillow import Pillow
