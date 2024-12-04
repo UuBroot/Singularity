@@ -12,26 +12,46 @@ class ModuleToUse(Enum):
     PILLOW = "pillow"
     FFMPEG = "ffmpeg"
     
-def convert(pathToFile, pathToOutput):
-    
-    formatToConvertTo = getFileType(pathToOutput)
+def convert(pathToFile, pathToOutput, type):    
     formatOfFile = getFileType(pathToFile)
+    formatToConvertTo = getFileType(pathToOutput)
+    
+    moduleForFile = getModuleToUse(formatOfFile)
+    moduleForConversion = getModuleToUse(formatToConvertTo)
+    
+    if type != None:
+        print("force "+type)
+        match(type):
+            case "audio":
+                moduleForFile = ModuleToUse.FFMPEG
+                moduleForConversion = ModuleToUse.FFMPEG
+                pass
+            case "video":
+                moduleForFile = ModuleToUse.FFMPEG
+                moduleForConversion = ModuleToUse.FFMPEG
+                pass
+            case "image":
+                moduleForFile = ModuleToUse.PILLOW
+                moduleForConversion = ModuleToUse.PILLOW
+                pass
+            case _:
+                print("type does not exist")
 
     if os.path.isfile(pathToFile):
 
         # Checks if the input and output files use the same module
-        if getModuleToUse(formatOfFile) != getModuleToUse(formatToConvertTo) or getModuleToUse(formatOfFile) == None:
-            if getModuleToUse(formatOfFile) == "":
+        if moduleForFile != moduleForConversion or moduleForFile == None:
+            if moduleForFile == "":
                 print("input file has unsupported format")
-            elif getModuleToUse(formatToConvertTo) == "":
+            elif moduleForConversion == "":
                 print("output format is not supported")
             else:
-                print("wrong combination of file used and format to convert to \n----\nmodule for "+formatOfFile+":"+str(getModuleToUse(formatOfFile)).split('.')[1]+" != module for "+formatToConvertTo+": "+str(getModuleToUse(formatToConvertTo)))
+                print("wrong combination of file used and format to convert to \n----\nmodule for "+formatOfFile+":"+str(moduleForFile).split('.')[1]+" != module for "+formatToConvertTo+": "+str(moduleForConversion))
             sys.exit(1)
         
-        print("using module "+str(getModuleToUse(formatOfFile)).split('.')[1]+" ...")
+        print("using module "+str(moduleForFile).split('.')[1]+" ...")
         
-        match(getModuleToUse(formatOfFile)):
+        match(moduleForFile):
             case ModuleToUse.PILLOW:
                 module_pillow.convert(pathToFile, pathToOutput)
             case ModuleToUse.FFMPEG:
