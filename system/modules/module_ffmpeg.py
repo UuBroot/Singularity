@@ -22,7 +22,7 @@ class FFMPEG(Module):
         try:
             (
                 ffmpeg.input(filepath)
-                .output(output)
+                .output(output, loglevel="quiet")
                 .run()
             )
         except Exception as e:
