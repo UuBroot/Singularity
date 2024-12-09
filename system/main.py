@@ -42,7 +42,7 @@ def convert(pathToFile, pathToOutput, type):
             elif moduleForConversion == "":
                 print("output format is not supported")
             else:
-                print("wrong combination of file used and format to convert to \n----\nmodule for "+formatOfFile+":"+str(moduleForFile).split('.')[1]+" != module for "+formatToConvertTo+": "+str(moduleForConversion))
+                print("wrong combination of file used and format to convert to \n----\nmodule for "+formatOfFile+":"+str(moduleForFile).split('.')[1]+" != module for "+formatToConvertTo+": "+str(moduleForConversion).split('.')[1])
             sys.exit(1)
         
         print("using module "+str(moduleForFile).split('.')[1]+" ...")
