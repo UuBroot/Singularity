@@ -6,8 +6,7 @@ import sys
 class FFMPEG(Module):
     def __init__(self):
         supportedFormats = (
-            "flac",
-            "mp4", "webm"
+            "mp4", "webm", "flac", "apng", "asf", "ea","mp3","wav", "mov","a64","aac","ac3","adts","adx","afc","aiff","apm", "aptx","ast", "au","avi","avif","binka","bit","caf","dds_pipe","dfpwm","dvd","eac3","f4v","fits","flv","g722","genh","gif","h264","hevc", "ircam","ismv","ivf","latm","loas","m4v","mjpeg","moflex","m4a","mp2","mp3","mpeg","mtv","mulaw","mxf","nut","obu","oga","ogg","ogv","opus","psp","sbc","sox","spdif","spx","svs","tta","vag","vob","voc","w64","wav","webm","webp", "wtv", "wv"
         )
         super().__init__(supportedFormats)
 
@@ -22,7 +21,7 @@ class FFMPEG(Module):
         try:
             (
                 ffmpeg.input(filepath)
-                .output(output, loglevel="quiet")
+                .output(output, loglevel="error")
                 .run()
             )
         except Exception as e:
