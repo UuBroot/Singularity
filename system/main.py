@@ -22,20 +22,16 @@ def convert(pathToFile, pathToOutput, type):
     if type != None:
         print("force "+type)
         match(type):
-            case "audio":
+            case "ffmpeg":
                 moduleForFile = ModuleToUse.FFMPEG
                 moduleForConversion = ModuleToUse.FFMPEG
                 pass
-            case "video":
-                moduleForFile = ModuleToUse.FFMPEG
-                moduleForConversion = ModuleToUse.FFMPEG
-                pass
-            case "image":
+            case "pillow":
                 moduleForFile = ModuleToUse.PILLOW
                 moduleForConversion = ModuleToUse.PILLOW
                 pass
             case _:
-                print("type does not exist")
+                print("module does not exist")
 
     if os.path.isfile(pathToFile):
 
@@ -52,10 +48,10 @@ def convert(pathToFile, pathToOutput, type):
         print("using module "+str(moduleForFile).split('.')[1]+" ...")
         
         match(moduleForFile):
-            case ModuleToUse.PILLOW:
-                module_pillow.convert(pathToFile, pathToOutput)
             case ModuleToUse.FFMPEG:
                 moduel_ffmpeg.convert(pathToFile, pathToOutput)
+            case ModuleToUse.PILLOW: #pillow as fallback for ffmpeg for images
+                module_pillow.convert(pathToFile, pathToOutput)
             case _:
                 print("novalid")
         
