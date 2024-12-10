@@ -1,6 +1,8 @@
 import os
 from enum import Enum
 import sys
+import threading
+import time
 ### Pillow ###
 from system.modules.module_pillow import Pillow
 module_pillow = Pillow()
@@ -25,11 +27,9 @@ def convert(pathToFile, pathToOutput, type):
             case "ffmpeg":
                 moduleForFile = ModuleToUse.FFMPEG
                 moduleForConversion = ModuleToUse.FFMPEG
-                pass
             case "pillow":
                 moduleForFile = ModuleToUse.PILLOW
                 moduleForConversion = ModuleToUse.PILLOW
-                pass
             case _:
                 print("module does not exist")
 
@@ -47,14 +47,17 @@ def convert(pathToFile, pathToOutput, type):
         
         print("using module "+str(moduleForFile).split('.')[1]+" ...")
         
+        thread: threading.Thread
+        
         match(moduleForFile):
             case ModuleToUse.FFMPEG:
-                moduel_ffmpeg.convert(pathToFile, pathToOutput)
+                thread = threading.Thread(target=moduel_ffmpeg.convert(pathToFile, pathToOutput))
             case ModuleToUse.PILLOW: #pillow as fallback for ffmpeg for images
-                module_pillow.convert(pathToFile, pathToOutput)
+                thread = threading.Thread(module_pillow.convert(pathToFile, pathToOutput))
             case _:
                 print("novalid")
-        
+        thread.start()
+        thread.join()
         print("saved to "+str(pathToOutput))
         
     else:
