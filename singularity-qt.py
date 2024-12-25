@@ -134,16 +134,17 @@ class MainWindow(QMainWindow):
         self.advancedOptionsContainer.setVisible(not self.advancedOptionsContainer.isVisible())
         
     def export(self):
+
         if self.pathOfExportField.text() != "" and self.filePathField.text() != "":
             if self.forceModuleSelection.currentText() == "None":
-                convert(self.filePathField.text(), self.pathOfExportField.text())
-        convert(self.filePathField.text(), self.pathOfExportField.text(), self.forceModuleSelection.currentText())
-        
+                self.worker_thread = ConvertionThread(self.filePathField.text(), self.pathOfExportField.text())
+            else:
+                self.worker_thread = ConvertionThread(self.filePathField.text(), self.pathOfExportField.text(), self.forceModuleSelection.currentText())
+
         ##Threading
-        self.worker_thread = ConvertionThread(self.filePathField.text(), self.pathOfExportField.text(), self.forceModuleSelection.currentText())
         self.worker_thread.finished.connect(self.convertationFinished)
         self.worker_thread.start()
-        
+
         self.loadingBar.show()
         
     def convertationFinished(self):
