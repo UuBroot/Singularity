@@ -21,6 +21,7 @@ class FFMPEG(Module):
         try:
             (
                 ffmpeg.input(filepath)
+                .output(output)
                 .run()
             )
         except Exception as e:
