@@ -102,6 +102,12 @@ class MainWindow(QMainWindow):
         self.loadingBar.setMaximumHeight(30)
         self.loadingBar.setCancelButton(None)
         self.global_layout.addWidget(self.loadingBar)
+        
+        ##Message
+        self.messageLabel = QLabel()
+        self.messageLabel.setMaximumHeight(20)
+        self.global_layout.addWidget(self.messageLabel)
+        
         ##Central Widget
         central_widget = QWidget()
         central_widget.setLayout(self.global_layout)
@@ -149,6 +155,7 @@ class MainWindow(QMainWindow):
         
     def convertationFinished(self):
         self.loadingBar.hide()
+        self.messageLabel.setText("File converted")
     
 if __name__ == "__main__":
     app = QApplication(sys.argv)
