@@ -146,7 +146,9 @@ class MainWindow(QMainWindow):
                 self.worker_thread = ConvertionThread(self.filePathField.text(), self.pathOfExportField.text())
             else:
                 self.worker_thread = ConvertionThread(self.filePathField.text(), self.pathOfExportField.text(), self.forceModuleSelection.currentText())
-
+        else:
+            self.messageLabel.setText("Please fill all fields")
+            return
         ##Threading
         self.worker_thread.finished.connect(self.convertationFinished)
         self.worker_thread.start()
