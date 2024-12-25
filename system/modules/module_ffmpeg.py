@@ -21,7 +21,6 @@ class FFMPEG(Module):
         try:
             (
                 ffmpeg.input(filepath)
-                .output(output, loglevel="error")
                 .run()
             )
         except Exception as e:
