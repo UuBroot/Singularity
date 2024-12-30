@@ -3,6 +3,8 @@ import ffmpeg
 import subprocess
 import sys
 
+from global_vars import globals
+
 class FFMPEG(Module):
     def __init__(self):
         supportedFormats = (
@@ -32,7 +34,8 @@ class FFMPEG(Module):
                     accLine = str(line).split("'")[1].split("\\")[0]
                     if accLine.startswith("frame="):
                         currFrame = int(accLine.split("=")[1])
-                        print((currFrame/totalFrames)*100)
+                        prc = (currFrame/totalFrames)*100
+                        globals.update(current_percentage=prc)
                 else:
                     break
         except Exception as e:
