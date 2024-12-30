@@ -1,28 +1,20 @@
+import time
 import sys
+import threading
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 
-from uielements.dragDropWidget import DragDropWidget
-from system.main import convert
+from ui_system.dragDropWidget import DragDropWidget
+from ui_system.ConvertionThread import ConvertionThread
+from ui_system.LoadingBarThread import LoadingBarThread
 
-class ConvertionThread(QThread):
-    filePathField:str
-    pathOfExportField:str
-    forceModule:str
+from global_vars import globals
     
-    def __init__(self, filePathField, pathOfExportField, forceModule):
-        super().__init__()
-        self.filePathField = filePathField
-        self.pathOfExportField = pathOfExportField
-        self.forceModule = forceModule
-    
-    def run(self):
-        convert(self.filePathField, self.pathOfExportField, self.forceModule)
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+                
         self.resize(800, 600)
         self.global_layout = QVBoxLayout()
 
@@ -67,13 +59,26 @@ class MainWindow(QMainWindow):
         path_of_export_select_button.setIcon(path_of_export_select_button_icon)
         path_of_export_select_button.clicked.connect(self.select_export_path)
         pathOfExportLayout.addWidget(path_of_export_select_button)
+        
+        ##Conversion Buttons
+        conversionButtonRow = QWidget()
+        conversionButtonRowLayout = QHBoxLayout()
+        conversionButtonRow.setLayout(conversionButtonRowLayout)
 
+        #Cancel Convertion Button
+        cancelConvertionButton = QPushButton()
+        cancelConvertionButton.setText("Cancel")
+        cancelConvertionButton.clicked.connect(self.cancelConvertion)
+        conversionButtonRowLayout.addWidget(cancelConvertionButton)
+        
         #ExportButton
         export_button = QPushButton()
         export_button_icon = QIcon.fromTheme(QIcon.ThemeIcon.GoNext)
         export_button.setIcon(export_button_icon)
         export_button.clicked.connect(self.export)
-        pathOfExportLayout.addWidget(export_button)
+        conversionButtonRowLayout.addWidget(export_button)
+        
+        self.global_layout.addWidget(conversionButtonRow)
         
         ##AdvancedOptionsToggleBox
         advancedOptionsBox = QCheckBox()
@@ -115,13 +120,11 @@ class MainWindow(QMainWindow):
 
         #DragNDrop Signal
         dropArea.signal.connect(self.updateFilePathField)
-        
-    def hideLoadingBar(self):#needs to exist so that the bar gets hiden after first frame rendered
-        self.loadingBar.hide()
     
     def updateFilePathField(self, message):
         self.filePathField.setText(message)
 
+    ###File Selection
     def select_input_path(self):
         path, _ = QFileDialog.getOpenFileName(
             self, "Select File", "", "All Files (*)"
@@ -139,6 +142,41 @@ class MainWindow(QMainWindow):
     def toggle_advanced_options(self):
         self.advancedOptionsContainer.setVisible(not self.advancedOptionsContainer.isVisible())
         
+    ###Loading Bar
+    def updateLoadingBar(self):
+        print("updating loading bar",globals.get("current_percentage"))
+        if globals.get("current_percentage") != 0.0:
+            self.loadingBar.setRange(0,100)
+            self.loadingBar.setValue(int(globals.get("current_percentage")))
+    
+    def resetLoadingBar(self):
+        self.loadingBar.setRange(0,0)
+        self.loadingBar.hide()
+        globals.update(current_percentage=0.0)
+        
+    def hideLoadingBar(self):#needs to exist so that the bar gets hiden after first frame rendered
+        self.loadingBar.hide()
+    ###Convertion
+    def convertationFinished(self):
+        self.updateLoadingBarThread.terminate()
+        self.resetLoadingBar()
+        
+        self.setFinishedMessage()
+    
+    def cancelConvertion(self):
+        self.worker_thread.terminate()
+        self.updateLoadingBarThread.terminate()
+        self.resetLoadingBar()
+        
+        globals.update(finishedType=1)
+        self.setFinishedMessage()
+        
+    def setFinishedMessage(self):
+        if globals.get("finishedType") == 0:
+            self.messageLabel.setText("Convertion finished")
+        else:
+            self.messageLabel.setText("Convertion canceled")
+            
     def export(self):
         if self.pathOfExportField.text() != "" and self.filePathField.text() != "":
             if self.forceModuleSelection.currentText() == "None":
@@ -150,13 +188,18 @@ class MainWindow(QMainWindow):
             return
         ##Threading
         self.worker_thread.finished.connect(self.convertationFinished)
+        
         self.worker_thread.start()
+        
+        self.messageLabel.setText("Converting...")
+        globals.update(finishedType=0)
+        
         self.loadingBar.show()
         
-    def convertationFinished(self):
-        self.loadingBar.hide()
-        self.messageLabel.setText("File converted")
-    
+        self.updateLoadingBarThread = LoadingBarThread()
+        self.updateLoadingBarThread.update_value.connect(self.updateLoadingBar)
+        self.updateLoadingBarThread.start()
+       
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
