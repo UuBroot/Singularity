@@ -27,7 +27,9 @@ jobs:
 
       - name: Install gettext on macOS
         if: runner.os == 'macOS'
-        run: brew install gettext
+        run: |
+            brew install gettext
+            brew link --force gettext
 
       - name: Build Executable
         uses: Nuitka/Nuitka-Action@main
