@@ -1,5 +1,4 @@
 from system.modules.module import Module
-import ffmpeg
 import subprocess
 import sys
 
@@ -22,19 +21,23 @@ class FFMPEG(Module):
         try:
             totalFrames = self.get_total_frames(filepath)
             print(f"Total frames: {totalFrames}")
-            process=(
-                ffmpeg.input(filepath)
-                .output(output)
-                .global_args('-progress', '-', '-nostats','-y','-threads','0')
-                .run_async(pipe_stdout=True, pipe_stderr=True)
+            process = subprocess.Popen(
+                ["ffmpeg", "-i", filepath, output, "-progress", "-", "-nostats", "-y", "-threads", "0"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
             )
+            print("Started ffmpeg")
             while process.poll() is None:
+                if totalFrames == 0:
+                    return
                 if process.stdout:
                     line = process.stdout.readline()
-                    accLine = str(line).split("'")[1].split("\\")[0]
+                    accLine = line.strip()
                     if accLine.startswith("frame="):
                         currFrame = int(accLine.split("=")[1])
-                        prc = (currFrame/totalFrames)*100
+                        print(f"Current frame: {currFrame}")
+                        prc = (currFrame / totalFrames) * 100
                         globals.update(current_percentage=prc)
                 else:
                     break
@@ -55,7 +58,7 @@ class FFMPEG(Module):
     def get_total_frames(self, filepath: str) -> int:
         try:
             result = subprocess.run(
-                ["ffprobe", "-v", "error", "-select_streams", "v:0", "-count_frames", "-show_entries", "stream=nb_read_frames", "-of", "default=nokey=1:noprint_wrappers=1", filepath],
+                ["ffprobe", "-v", "error", "-select_streams", "v:0", "-count_packets", "-show_entries", "stream=nb_read_packets", "-of", "csv=p=0", filepath],
                 capture_output=True,
                 text=True
             )
