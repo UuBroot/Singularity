@@ -12,6 +12,13 @@ jobs:
       - name: Check-out repository
         uses: actions/checkout@v4
 
+      - name: Install gettext on macOS
+        if: runner.os == 'macOS'
+        run: |
+            brew install gettext
+            brew link --force gettext
+            echo "/usr/local/opt/gettext/lib" >> /etc/paths.d/gettext
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -24,13 +31,6 @@ jobs:
       - name: Install Dependencies
         run: |
             pip install -r requirements.txt
-
-      - name: Install gettext on macOS
-        if: runner.os == 'macOS'
-        run: |
-            brew install gettext
-            brew link --force gettext
-            echo "/usr/local/opt/gettext/lib" >> /etc/paths.d/gettext
 
       - name: Build Executable
         uses: Nuitka/Nuitka-Action@main
