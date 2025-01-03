@@ -14,10 +14,11 @@ jobs:
 
       - name: Install Python on macOS
         if: runner.os == 'macOS'
+        shell: bash
         run: |
             brew install python@3.10
-            echo 'export PATH="/usr/local/opt/python@3.10/bin:$PATH"' >> ~/.zshrc
-            source ~/.zshrc
+            echo 'export PATH="/usr/local/opt/python@3.10/bin:$PATH"' >> ~/.bash_profile
+            source ~/.bash_profile
 
       - name: Install Python on Ubuntu
         if: runner.os == 'Linux'
