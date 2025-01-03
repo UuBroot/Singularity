@@ -2,7 +2,7 @@ import sys
 import system.main
 
 if len(sys.argv) < 3 or len(sys.argv) > 4:
-    print("Usage: python main.py <path to file> <path to output.format> <type of module to use ffmpeg/pillow")
+    print("Usage: python main.py <path to file> <path to output.format> <type of module to use ffmpeg/pillow/text")
     sys.exit(1)
 
 try:
