@@ -10,7 +10,7 @@ from typing import Dict
 class Text(Module):
     def __init__(self):
         supportedFormats = (
-            "txt","json","yaml","yml","xml","csv"
+            "json","yaml","yml","xml","csv"
         )
         super().__init__(supportedFormats)
 
@@ -48,9 +48,6 @@ class Text(Module):
 
                         with open(output, 'w') as file:
                             file.write(xml_str)
-                    case "txt":
-                        print("Singularty cannot convert to a txt file. Please use: json, xml, yaml,...")
-                        sys.exit(1)
                     case "csv":
                         print("EARY IMPLEMENTATION")#TODO:Improve csv exports
                         with open(output, 'w', newline='') as file:
