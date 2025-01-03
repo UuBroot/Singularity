@@ -12,7 +12,7 @@ class ModuleToUse(Enum):
     PILLOW = "pillow"
     FFMPEG = "ffmpeg"
     
-def convert(pathToFile, pathToOutput, type):    
+def convert(pathToFile:str, pathToOutput:str, type = None):    
     formatOfFile = getFileType(pathToFile)
     formatToConvertTo = getFileType(pathToOutput)
     
