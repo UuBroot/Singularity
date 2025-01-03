@@ -1,6 +1,5 @@
 # requirements.txt
 pillow
-ffmpeg-python
 pyyaml
 xmltodict
 PyQt6
