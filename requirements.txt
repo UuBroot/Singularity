@@ -4,3 +4,4 @@ ffmpeg-python
 pyyaml
 xmltodict
 PyQt6
+nuitka
