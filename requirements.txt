@@ -3,3 +3,4 @@ pillow
 pyyaml
 xmltodict
 PyQt6
+nuitka
