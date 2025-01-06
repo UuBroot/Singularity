@@ -295,12 +295,13 @@ celerybeat.pid
 
 # Environments
 .env
-.venv
+.venv*
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
 
 # Spyder project settings
 .spyderproject
@@ -493,3 +494,4 @@ $RECYCLE.BIN/
 
 #Singularity; added for testing
 export*
+
