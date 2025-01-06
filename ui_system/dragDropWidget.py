@@ -1,8 +1,8 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout
-from PyQt6.QtCore import pyqtSignal
+from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
+from PySide6.QtCore import Signal
 
 class DragDropWidget(QWidget):
-    signal = pyqtSignal(str)
+    signal = Signal(str)
 
     file_path: str
     def __init__(self):
@@ -21,7 +21,7 @@ class DragDropWidget(QWidget):
         if event.mimeData().hasUrls:
             event.accept()
         else:
-            event.ingore()
+            event.ignore()
 
     def dropEvent(self, event):
         if event.mimeData().hasUrls():
