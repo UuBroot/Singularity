@@ -34,17 +34,16 @@ jobs:
         run: |
             pip install -r requirements.txt
 
-      - name: Install depends on Windows
-        if: runner.os == 'Windows'
-        run: |
-            mkdir -p C:\Users\RUNNER~1\AppData\Local\Nuitka\Nuitka\Cache\DOWNLO~1\depends\x86_64
-            curl -L -o C:\Users\RUNNER~1\AppData\Local\Nuitka\Nuitka\Cache\DOWNLO~1\depends\x86_64\depends.zip https://dependencywalker.com/depends22_x64.zip
-            tar -xf C:\Users\RUNNER~1\AppData\Local\Nuitka\Nuitka\Cache\DOWNLO~1\depends\x86_64\depends.zip -C C:\Users\RUNNER~1\AppData\Local\Nuitka\Nuitka\Cache\DOWNLO~1\depends\x86_64
-
-      - name: Build Executable
+      - name: Build Executable Ubuntu
+        if: matrix.os == 'ubuntu-latest'
         run: |
             nuitka --follow-imports --standalone --onefile --output-dir=build --include-plugin-directory=system --plugin-enable=pyqt6 singularity-qt.py
-
+        
+      - name: Build Executable Windows 
+        if: matrix.os == 'windows-latest'
+        run: |
+            nuitka --follow-imports --standalone --onefile --output-dir=build --include-plugin-directory=system --plugin-enable=pyqt6 --assume-yes-for-downloads --msvc=latest singularity-qt.py
+      
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
