@@ -1,9 +1,9 @@
 import time
 import sys
 import threading
-from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
-from PyQt6.QtCore import *
+from PySide6.QtWidgets import *
+from PySide6.QtGui import *
+from PySide6.QtCore import *
 
 from ui_system.dragDropWidget import DragDropWidget
 from ui_system.ConvertionThread import ConvertionThread
@@ -36,7 +36,7 @@ class MainWindow(QMainWindow):
 
         #PathOfFileButton
         path_of_file_select_button = QPushButton()
-        path_of_file_select_button_icon = QIcon.fromTheme(QIcon.ThemeIcon.DocumentOpen)
+        path_of_file_select_button_icon = QIcon.fromTheme("document-open")
         path_of_file_select_button.setIcon(path_of_file_select_button_icon)
         path_of_file_select_button.clicked.connect(self.select_input_path)
         pathOfFileRowLayout.addWidget(path_of_file_select_button)
@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
 
         #PathOfFileButton
         path_of_export_select_button = QPushButton()
-        path_of_export_select_button_icon = QIcon.fromTheme(QIcon.ThemeIcon.DocumentSave)
+        path_of_export_select_button_icon = QIcon.fromTheme("document-save")
         path_of_export_select_button.setIcon(path_of_export_select_button_icon)
         path_of_export_select_button.clicked.connect(self.select_export_path)
         pathOfExportLayout.addWidget(path_of_export_select_button)
@@ -73,7 +73,7 @@ class MainWindow(QMainWindow):
         
         #ExportButton
         export_button = QPushButton()
-        export_button_icon = QIcon.fromTheme(QIcon.ThemeIcon.GoNext)
+        export_button_icon = QIcon.fromTheme("go-next")
         export_button.setIcon(export_button_icon)
         export_button.clicked.connect(self.export)
         conversionButtonRowLayout.addWidget(export_button)
@@ -179,7 +179,8 @@ class MainWindow(QMainWindow):
             
     def export(self):
         if self.pathOfExportField.text() != "" and self.filePathField.text() != "":
-            if self.forceModuleSelection.currentText() == "None":
+            print(self.forceModuleSelection.currentText())
+            if self.forceModuleSelection.currentText() == "none":
                 self.worker_thread = ConvertionThread(self.filePathField.text(), self.pathOfExportField.text())
             else:
                 self.worker_thread = ConvertionThread(self.filePathField.text(), self.pathOfExportField.text(), self.forceModuleSelection.currentText())
