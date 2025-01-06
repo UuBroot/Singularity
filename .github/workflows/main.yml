@@ -37,16 +37,16 @@ jobs:
       - name: Build Executable Ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: |
-            nuitka --follow-imports --standalone --onefile --output-dir=build --include-plugin-directory=system --plugin-enable=pyqt6 singularity-qt.py
+            nuitka --follow-imports --standalone --onefile --output-dir=build --include-plugin-directory=system --plugin-enable=pyside6 singularity-qt.py
         
       - name: Build Executable Windows 
         if: matrix.os == 'windows-latest'
         run: |
-            nuitka --follow-imports --standalone --onefile --output-dir=build --include-plugin-directory=system --plugin-enable=pyqt6 --assume-yes-for-downloads --msvc=latest singularity-qt.py
+            nuitka --follow-imports --standalone --onefile --output-dir=build --include-plugin-directory=system --plugin-enable=pyside6 --assume-yes-for-downloads --msvc=latest singularity-qt.py
       - name: Build Executable MacOSArm
         if: matrix.os == 'macos-latest'
         run: |
-            nuitka --follow-imports --standalone --macos-create-app-bundle --output-dir=build --include-plugin-directory=system --plugin-enable=pyqt6 singularity-qt.py
+            nuitka --follow-imports --standalone --macos-create-app-bundle --output-dir=build --include-plugin-directory=system --plugin-enable=pyside6 singularity-qt.py
           
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
