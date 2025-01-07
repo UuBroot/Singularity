@@ -47,7 +47,7 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
     pathToOutput_parts = pathToOutput.split("/") # Split the path into an array and remove the last element
     pathToOutputWithoutFile = "/".join(pathToOutput_parts[:-1])
     if os.path.isfile(pathToFile) and os.path.isdir(pathToOutputWithoutFile):##checks if the input file exists and the output files directory exists
-        print(moduleForFile,"  ",moduleForConversion)
+        print(formatOfFile,":",moduleForFile,"  ",formatToConvertTo,":",moduleForConversion)
         ##Error handling for modules
         if moduleForFile == None and moduleForConversion == None:
             print("input and output format is not supported")
