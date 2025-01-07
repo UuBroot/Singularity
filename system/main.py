@@ -2,7 +2,6 @@ import os
 from enum import Enum
 import sys
 import threading
-import asyncio
 
 ### Pillow ###
 from system.modules.module_pillow import Pillow
