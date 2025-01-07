@@ -5,6 +5,7 @@ class FinishedType(Enum):
     CANCELED = 1
     NOTAVALIDFILE = 2
     WRONGCOMBINATION = 3
+    FILENOTSUPPORTED = 4
     
 globals = {
     "current_percentage": 0.0,

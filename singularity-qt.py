@@ -198,6 +198,8 @@ class MainWindow(QMainWindow):
                 self.messageLabel.setText("Not a valid file")
             case FinishedType.WRONGCOMBINATION:
                 self.messageLabel.setText("Wrong combination of file used and format to convert to")
+            case FinishedType.FILENOTSUPPORTED:
+                self.messageLabel.setText("one of the filetypes is not supported")
             case _:
                 self.messageLabel.setText("Unknown error")
             
