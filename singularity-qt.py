@@ -136,7 +136,9 @@ class MainWindow(QMainWindow):
     
     def updateFilePathField(self, message):
         self.filePathField.setText(message)
-
+        message_parts = message.split("/") # Split the path into an array and remove the last element
+        self.pathOfExportField.setText("/".join(message_parts[:-1])+"/")
+        
     ###File Selection
     def select_input_path(self):
         path, _ = QFileDialog.getOpenFileName(
