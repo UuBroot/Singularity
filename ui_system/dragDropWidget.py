@@ -3,8 +3,8 @@ from PySide6.QtCore import Signal
 
 class DragDropWidget(QWidget):
     signal = Signal(str)
-
     file_path: str
+    
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -15,7 +15,7 @@ class DragDropWidget(QWidget):
         layout.addWidget(self.label)
         self.setLayout(layout)
         self.setAcceptDrops(True)
-        self.setStyleSheet("background-color: gray;")
+        self.setStyleSheet("border: 10px solid #454547;border-radius:15px;padding: 20px;")
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls:
