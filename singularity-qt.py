@@ -82,24 +82,36 @@ class MainWindow(QMainWindow):
         self.global_layout.addWidget(conversionButtonRow)
         
         ##AdvancedOptionsToggleBox
+        advancedOptionsRow = QWidget()
+        advancedOptionsRowLayout = QHBoxLayout()
+        advancedOptionsRow.setLayout(advancedOptionsRowLayout)
+        advancedOptionsRow.setMaximumHeight(50)
+        self.global_layout.addWidget(advancedOptionsRow)
+        
         advancedOptionsBox = QCheckBox()
+        advancedOptionsBox.setMaximumWidth(20)
         advancedOptionsBox.stateChanged.connect(self.toggle_advanced_options)
-        self.global_layout.addWidget(advancedOptionsBox)
+        advancedOptionsRowLayout.addWidget(advancedOptionsBox)
+        
+        advancedOptionsLabl = QLabel()
+        advancedOptionsLabl.setText("Advanced Options")
+        advancedOptionsRowLayout.addWidget(advancedOptionsLabl)
         
         #Advanced Options Box
         self.advancedOptionsContainer = QWidget()
-        advancedOptionsContainerLayout = QHBoxLayout()
+        self.advancedOptionsContainerLayout = QHBoxLayout()
         self.advancedOptionsContainer.setVisible(False)
-        self.advancedOptionsContainer.setLayout(advancedOptionsContainerLayout)
-        self.advancedOptionsContainer.setMaximumHeight(40)
+        self.advancedOptionsContainer.setLayout(self.advancedOptionsContainerLayout)
+        self.advancedOptionsContainer.setMaximumHeight(50)
         self.global_layout.addWidget(self.advancedOptionsContainer)
         
         #Advanced module force selection
         self.forceModuleSelection = QComboBox()
+        self.forceModuleSelection.setMaximumHeight(30)
         self.forceModuleSelection.addItem("none")
         self.forceModuleSelection.addItem("ffmpeg")
         self.forceModuleSelection.addItem("pillow")
-        advancedOptionsContainerLayout.addWidget(self.forceModuleSelection)
+        self.advancedOptionsContainerLayout.addWidget(self.forceModuleSelection)
         
         ##Loading Bar
         self.loadingBar = QProgressDialog()
@@ -157,6 +169,7 @@ class MainWindow(QMainWindow):
         
     def hideLoadingBar(self):#needs to exist so that the bar gets hiden after first frame rendered
         self.loadingBar.hide()
+
     ###Convertion
     def convertationFinished(self):
         self.updateLoadingBarThread.terminate()
