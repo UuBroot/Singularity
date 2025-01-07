@@ -15,14 +15,19 @@ class DragDropWidget(QWidget):
         self.setLayout(self.layout)
 
         ##guide lable
-        self.guideLabelBox = QWidget()
-        guideLabelBoxLayout = QHBoxLayout()
-        guidelabel = QLabel("Drag and drop a file here")
-        guidelabel.setAlignment(Qt.AlignCenter)  # Center the text
-        guideLabelBoxLayout.addWidget(guidelabel)
-        self.guideLabelBox.setLayout(guideLabelBoxLayout)
+        self.guidelabelBox = QWidget()
+        self.guidelabelBoxLayout = QHBoxLayout()
+        self.guidelabel = QLabel("Drag and drop a file here")
+        self.guidelabel.setStyleSheet("""
+                                 
+                                 color: rgba(255, 255, 255, 0.7);
+                                 
+                                 """)
+        self.guidelabel.setAlignment(Qt.AlignCenter)  # Center the text
+        self.guidelabelBoxLayout.addWidget(self.guidelabel)
+        self.guidelabelBox.setLayout(self.guidelabelBoxLayout)
 
-        self.layout.addWidget(self.guideLabelBox)
+        self.layout.addWidget(self.guidelabelBox)
         
         ##on drag screen
         self.dragScreen = QWidget()
@@ -41,20 +46,14 @@ class DragDropWidget(QWidget):
         
         self.setAcceptDrops(True)
         self.setStyleSheet("""
-                            background-color: #5C5C5C;
+                            background-color: rgba(92, 92, 92, 0.1);
                             border-radius:15px;
                             padding: 20px;
 
                            """)
 
     def dragEnterEvent(self, event):
-        self.layout.setCurrentWidget(self.dragScreen)
-        self.setStyleSheet("""
-                            background-color: #292929;
-                            border-radius:15px;
-                            padding: 20px;
-                            
-                           """)
+        self.switchDragWidgetTo("dragScreen")
         
         if event.mimeData().hasUrls:
             event.accept()
@@ -62,15 +61,10 @@ class DragDropWidget(QWidget):
             event.ignore()
     
     def dragLeaveEvent(self, event):
-        self.layout.setCurrentWidget(self.guidelabel)
-        self.setStyleSheet("""
-                            background-color: #5C5C5C;
-                            border-radius:15px;
-                            padding: 20px;
-                            
-                           """)
+        self.switchDragWidgetTo("guidelabelBox")
 
     def dropEvent(self, event):
+        self.switchDragWidgetTo("guidelabelBox")
         if event.mimeData().hasUrls():
             urls = event.mimeData().urls()
             if urls:
@@ -79,3 +73,24 @@ class DragDropWidget(QWidget):
 
     def getFilePath(self, url):
         return url.toLocalFile()
+
+    def switchDragWidgetTo(self, switchTo: str):
+        match switchTo:
+            case "guidelabelBox":
+                self.layout.setCurrentWidget(self.guidelabelBox)
+                self.setStyleSheet("""
+                                    background-color: rgba(92, 92, 92, 0.1);
+                                    border-radius:15px;
+                                    padding: 20px;
+                                    
+                                """)
+            case "dragScreen":
+                self.layout.setCurrentWidget(self.dragScreen)
+                self.setStyleSheet("""
+                            background-color: rgba(41, 41, 41, 0.1);
+                            border-radius:15px;
+                            padding: 20px;
+                            
+                           """)
+            case _:
+                print("Invalid switchTo value")
