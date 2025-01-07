@@ -111,6 +111,7 @@ class MainWindow(QMainWindow):
         self.forceModuleSelection.addItem("none")
         self.forceModuleSelection.addItem("ffmpeg")
         self.forceModuleSelection.addItem("pillow")
+        self.forceModuleSelection.addItem("text")
         self.advancedOptionsContainerLayout.addWidget(self.forceModuleSelection)
         
         ##Loading Bar
