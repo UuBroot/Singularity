@@ -3,6 +3,8 @@ from enum import Enum
 import sys
 import threading
 
+from global_vars import globals, FinishedType
+
 ### Pillow ###
 from system.modules.module_pillow import Pillow
 module_pillow = Pillow()
@@ -72,6 +74,7 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
         
     else:
         print("not a valid file")
+        globals.update(finishedType=FinishedType.NOTAVALIDFILE)
     
 def getFileType(path):
     return os.path.splitext(os.path.basename(path))[1][1:]

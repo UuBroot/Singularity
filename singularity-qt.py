@@ -9,7 +9,7 @@ from ui_system.dragDropWidget import DragDropWidget
 from ui_system.ConvertionThread import ConvertionThread
 from ui_system.LoadingBarThread import LoadingBarThread
 
-from global_vars import globals
+from global_vars import globals, FinishedType
     
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -182,14 +182,19 @@ class MainWindow(QMainWindow):
         self.updateLoadingBarThread.terminate()
         self.resetLoadingBar()
         
-        globals.update(finishedType=1)
+        globals.update(finishedType=FinishedType.CANCELED)
         self.setFinishedMessage()
         
     def setFinishedMessage(self):
-        if globals.get("finishedType") == 0:
-            self.messageLabel.setText("Convertion finished")
-        else:
-            self.messageLabel.setText("Convertion canceled")
+        match globals.get("finishedType"):
+            case FinishedType.FINISHED:
+                self.messageLabel.setText("Convertion finished")
+            case FinishedType.CANCELED:
+                self.messageLabel.setText("Convertion canceled")
+            case FinishedType.NOTAVALIDFILE:
+                self.messageLabel.setText("Not a valid file")
+            case _:
+                self.messageLabel.setText("Unknown error")
             
     def export(self):
         if self.pathOfExportField.text() != "" and self.filePathField.text() != "":
@@ -207,7 +212,7 @@ class MainWindow(QMainWindow):
         self.worker_thread.start()
         
         self.messageLabel.setText("Converting...")
-        globals.update(finishedType=0)
+        globals.update(finishedType=FinishedType.FINISHED)
         
         self.loadingBar.show()
         
