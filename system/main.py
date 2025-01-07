@@ -41,6 +41,7 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
                 moduleForConversion = ModuleToUse.TEXT
             case _:
                 print("module does not exist")
+                globals.update(finishedType=FinishedType.WRONGCOMBINATION)
 
     if os.path.isfile(pathToFile):
         
@@ -53,7 +54,7 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
             else:
                 print("wrong combination of file used and format to convert to")
                 globals.update(finishedType=FinishedType.WRONGCOMBINATION)
-            sys.exit(1)
+            return
         
         print("using module "+str(moduleForFile).split('.')[1]+" ...")
         
