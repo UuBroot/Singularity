@@ -36,8 +36,8 @@ class FFMPEG(Module):
                     accLine = line.strip()
                     if accLine.startswith("frame="):
                         currFrame = int(accLine.split("=")[1])
-                        print(f"Current frame: {currFrame}")
                         prc = (currFrame / totalFrames) * 100
+                        print(f"{prc}%", end="\r")
                         globals.update(current_percentage=prc)
                 else:
                     break
