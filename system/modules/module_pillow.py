@@ -1,5 +1,6 @@
 from PIL import Image
 from system.modules.module import Module
+from global_vars import globals, FinishedType
 
 class Pillow(Module):
     def __init__(self):
@@ -9,5 +10,9 @@ class Pillow(Module):
         super().__init__(supportedFormats)
 
     def convert(self, filepath: str, output: str):
-        img_png = Image.open(filepath)
-        img_png.save(output)
+        try:
+            img_png = Image.open(filepath)
+            img_png.save(output)
+        except Exception as e:
+            print(f"Error converting {filepath} to {output}: {e}")
+            globals.update(finishedType=FinishedType.WRONGCOMBINATION)
