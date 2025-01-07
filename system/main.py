@@ -43,7 +43,9 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
                 print("module does not exist")
                 globals.update(finishedType=FinishedType.WRONGCOMBINATION)
 
-    if os.path.isfile(pathToFile):
+    pathToOutput_parts = pathToOutput.split("/") # Split the path into an array and remove the last element
+    pathToOutputWithoutFile = "/".join(pathToOutput_parts[:-1])
+    if os.path.isfile(pathToFile) and os.path.isdir(pathToOutputWithoutFile):
         
         # Checks if the input and output files use the same module
         if moduleForFile != moduleForConversion or moduleForFile == None:
