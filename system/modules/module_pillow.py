@@ -13,6 +13,7 @@ class Pillow(Module):
         try:
             img_png = Image.open(filepath)
             img_png.save(output)
+            globals.update(finishedType=FinishedType.FINISHED)
         except Exception as e:
             print(f"Error converting {filepath} to {output}: {e}")
             globals.update(finishedType=FinishedType.WRONGCOMBINATION)

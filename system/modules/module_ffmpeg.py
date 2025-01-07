@@ -2,7 +2,7 @@ from system.modules.module import Module
 import subprocess
 import sys
 
-from global_vars import globals
+from global_vars import globals, FinishedType
 
 class FFMPEG(Module):
     def __init__(self):
@@ -41,6 +41,8 @@ class FFMPEG(Module):
                         globals.update(current_percentage=prc)
                 else:
                     break
+                
+            globals.update(finishedType=FinishedType.FINISHED)
         except Exception as e:
             print(e)
             sys.exit(1)

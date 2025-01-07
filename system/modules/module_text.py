@@ -7,6 +7,8 @@ import xmltodict
 import csv
 from typing import Dict
 
+from global_vars import globals, FinishedType
+
 class Text(Module):
     def __init__(self):
         supportedFormats = (
@@ -59,6 +61,8 @@ class Text(Module):
                         sys.exit(1)
             except Exception as e:
                 print(e)
+                
+        globals.update(finishedType=FinishedType.FINISHED)
 
     def readFile(self, path, format)-> Dict:
         with open(path, 'r') as file:
