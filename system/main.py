@@ -96,7 +96,13 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
             print("the file was not saved :/")
         
     else:
-        print("not a valid file")
+        print("""
+              not a valid file \n
+              pathToFile: """+pathToFile+""" \n
+              pathToOutput: """+pathToOutput+"""
+              
+              """)
+        
         globals.update(finishedType=FinishedType.NOTAVALIDFILE)
     
 def getFileType(path):
