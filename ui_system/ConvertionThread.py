@@ -16,7 +16,10 @@ class ConvertionThread(QThread):
         self.forceModule = forceModule
     
     def run(self):
-        convert(self.filePathField, self.pathOfExportField, self.forceModule)
+        try:
+            convert(self.filePathField, self.pathOfExportField, self.forceModule)
+        except Exception as e:
+            print(e)
         
     def stop(self):
         self.terminate()
