@@ -64,6 +64,7 @@ class MainWindow(QMainWindow):
         conversionButtonRow = QWidget()
         conversionButtonRowLayout = QHBoxLayout()
         conversionButtonRow.setLayout(conversionButtonRowLayout)
+        conversionButtonRow.setMaximumHeight(50)
 
         #Cancel Convertion Button
         cancelConvertionButton = QPushButton()
