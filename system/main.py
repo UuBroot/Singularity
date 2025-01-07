@@ -43,7 +43,7 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
                 print("module does not exist")
 
     if os.path.isfile(pathToFile):
-
+        
         # Checks if the input and output files use the same module
         if moduleForFile != moduleForConversion or moduleForFile == None:
             if moduleForFile == "":
@@ -51,8 +51,8 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
             elif moduleForConversion == "":
                 print("output format is not supported")
             else:
-                #TODO: Fix out of index crash
-                print("wrong combination of file used and format to convert to \n----\nmodule for "+formatOfFile+":"+str(moduleForFile).split('.')[1]+" != module for "+formatToConvertTo+": "+str(moduleForConversion).split('.')[1])
+                print("wrong combination of file used and format to convert to")
+                globals.update(finishedType=FinishedType.WRONGCOMBINATION)
             sys.exit(1)
         
         print("using module "+str(moduleForFile).split('.')[1]+" ...")
