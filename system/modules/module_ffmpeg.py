@@ -20,7 +20,6 @@ class FFMPEG(Module):
         ##Runs the command
         try:
             totalFrames = self.get_total_frames(filepath)
-            print(f"Total frames: {totalFrames}")
             process = subprocess.Popen(
                 ["ffmpeg", "-i", filepath, output, "-progress", "-", "-nostats", "-y", "-threads", "0"],
                 stdout=subprocess.PIPE,
@@ -30,7 +29,7 @@ class FFMPEG(Module):
             print("Started ffmpeg")
             while process.poll() is None:
                 if totalFrames == 0:
-                    return
+                    pass
                 if process.stdout:
                     line = process.stdout.readline()
                     accLine = line.strip()
@@ -39,13 +38,11 @@ class FFMPEG(Module):
                         prc = (currFrame / totalFrames) * 100
                         print(f"{prc}%", end="\r")
                         globals.update(current_percentage=prc)
-                else:
-                    break
-                
-            globals.update(finishedType=FinishedType.FINISHED)
         except Exception as e:
             print(e)
             sys.exit(1)
+            
+        globals.update(finishedType=FinishedType.FINISHED)
         
     def isFfmpegInstalled(self):
         try:
@@ -66,7 +63,10 @@ class FFMPEG(Module):
             )
             if result.returncode != 0:
                 raise Exception(f"ffprobe error: {result.stderr}")
-            return int(result.stdout.strip())
+            output = result.stdout.strip()
+            if not output.isdigit():
+                return 0
+            return int(output)
         except Exception as e:
             print(f"Error getting total frames: {e}")
             return 0
