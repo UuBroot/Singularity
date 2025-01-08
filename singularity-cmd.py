@@ -1,4 +1,5 @@
 import sys
+import os
 import system.main
 
 if len(sys.argv) < 3 or len(sys.argv) > 4:
@@ -10,4 +11,7 @@ try:
 except:
     arg3 = None
 
-system.main.convert(sys.argv[1], sys.argv[2], arg3)
+input_file = os.path.abspath(sys.argv[1])
+output_file = os.path.abspath(sys.argv[2])
+
+system.main.convert(input_file, output_file, arg3)

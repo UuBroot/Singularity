@@ -9,7 +9,7 @@ from ui_system.dragDropWidget import DragDropWidget
 from ui_system.ConvertionThread import ConvertionThread
 from ui_system.LoadingBarThread import LoadingBarThread
 
-from global_vars import globals
+from global_vars import globals, FinishedType
     
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -64,6 +64,7 @@ class MainWindow(QMainWindow):
         conversionButtonRow = QWidget()
         conversionButtonRowLayout = QHBoxLayout()
         conversionButtonRow.setLayout(conversionButtonRowLayout)
+        conversionButtonRow.setMaximumHeight(50)
 
         #Cancel Convertion Button
         cancelConvertionButton = QPushButton()
@@ -81,24 +82,45 @@ class MainWindow(QMainWindow):
         self.global_layout.addWidget(conversionButtonRow)
         
         ##AdvancedOptionsToggleBox
+        advancedOptionsRow = QWidget()
+        advancedOptionsRowLayout = QHBoxLayout()
+        advancedOptionsRow.setLayout(advancedOptionsRowLayout)
+        advancedOptionsRow.setMaximumHeight(50)
+        self.global_layout.addWidget(advancedOptionsRow)
+        
         advancedOptionsBox = QCheckBox()
+        advancedOptionsBox.setMaximumWidth(20)
         advancedOptionsBox.stateChanged.connect(self.toggle_advanced_options)
-        self.global_layout.addWidget(advancedOptionsBox)
+        advancedOptionsRowLayout.addWidget(advancedOptionsBox)
+        
+        advancedOptionsLabl = QLabel()
+        advancedOptionsLabl.setText("Advanced Options")
+        advancedOptionsRowLayout.addWidget(advancedOptionsLabl)
         
         #Advanced Options Box
         self.advancedOptionsContainer = QWidget()
-        advancedOptionsContainerLayout = QHBoxLayout()
+        self.advancedOptionsContainerLayout = QHBoxLayout()
         self.advancedOptionsContainer.setVisible(False)
-        self.advancedOptionsContainer.setLayout(advancedOptionsContainerLayout)
-        self.advancedOptionsContainer.setMaximumHeight(40)
+        self.advancedOptionsContainer.setLayout(self.advancedOptionsContainerLayout)
+        self.advancedOptionsContainer.setMaximumHeight(70)
         self.global_layout.addWidget(self.advancedOptionsContainer)
         
         #Advanced module force selection
+        forceModuleSelectionBox = QWidget()
+        forceModuleSelectionBoxLayout = QHBoxLayout()
+        forceModuleSelectionBox.setLayout(forceModuleSelectionBoxLayout)
+        self.advancedOptionsContainerLayout.addWidget(forceModuleSelectionBox)
+        
+        forceModuleSelectionLabel = QLabel()
+        forceModuleSelectionLabel.setText("Force Module")
+        forceModuleSelectionBoxLayout.addWidget(forceModuleSelectionLabel)
+        
         self.forceModuleSelection = QComboBox()
         self.forceModuleSelection.addItem("none")
         self.forceModuleSelection.addItem("ffmpeg")
         self.forceModuleSelection.addItem("pillow")
-        advancedOptionsContainerLayout.addWidget(self.forceModuleSelection)
+        self.forceModuleSelection.addItem("text")
+        forceModuleSelectionBoxLayout.addWidget(self.forceModuleSelection)
         
         ##Loading Bar
         self.loadingBar = QProgressDialog()
@@ -123,7 +145,9 @@ class MainWindow(QMainWindow):
     
     def updateFilePathField(self, message):
         self.filePathField.setText(message)
-
+        message_parts = message.split("/") # Split the path into an array and remove the last element
+        self.pathOfExportField.setText("/".join(message_parts[:-1])+"/")
+        
     ###File Selection
     def select_input_path(self):
         path, _ = QFileDialog.getOpenFileName(
@@ -156,6 +180,7 @@ class MainWindow(QMainWindow):
         
     def hideLoadingBar(self):#needs to exist so that the bar gets hiden after first frame rendered
         self.loadingBar.hide()
+
     ###Convertion
     def convertationFinished(self):
         self.updateLoadingBarThread.terminate()
@@ -168,14 +193,23 @@ class MainWindow(QMainWindow):
         self.updateLoadingBarThread.terminate()
         self.resetLoadingBar()
         
-        globals.update(finishedType=1)
+        globals.update(finishedType=FinishedType.CANCELED)
         self.setFinishedMessage()
         
     def setFinishedMessage(self):
-        if globals.get("finishedType") == 0:
-            self.messageLabel.setText("Convertion finished")
-        else:
-            self.messageLabel.setText("Convertion canceled")
+        match globals.get("finishedType"):
+            case FinishedType.FINISHED:
+                self.messageLabel.setText("Convertion finished")
+            case FinishedType.CANCELED:
+                self.messageLabel.setText("Convertion canceled")
+            case FinishedType.NOTAVALIDFILE:
+                self.messageLabel.setText("Not a valid file")
+            case FinishedType.WRONGCOMBINATION:
+                self.messageLabel.setText("Wrong combination of file used and format to convert to")
+            case FinishedType.FILENOTSUPPORTED:
+                self.messageLabel.setText("one of the filetypes is not supported")
+            case _:
+                self.messageLabel.setText("Unknown error")
             
     def export(self):
         if self.pathOfExportField.text() != "" and self.filePathField.text() != "":
@@ -193,7 +227,7 @@ class MainWindow(QMainWindow):
         self.worker_thread.start()
         
         self.messageLabel.setText("Converting...")
-        globals.update(finishedType=0)
+        globals.update(finishedType=FinishedType.FINISHED)
         
         self.loadingBar.show()
         
