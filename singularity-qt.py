@@ -102,17 +102,25 @@ class MainWindow(QMainWindow):
         self.advancedOptionsContainerLayout = QHBoxLayout()
         self.advancedOptionsContainer.setVisible(False)
         self.advancedOptionsContainer.setLayout(self.advancedOptionsContainerLayout)
-        self.advancedOptionsContainer.setMaximumHeight(50)
+        self.advancedOptionsContainer.setMaximumHeight(70)
         self.global_layout.addWidget(self.advancedOptionsContainer)
         
         #Advanced module force selection
+        forceModuleSelectionBox = QWidget()
+        forceModuleSelectionBoxLayout = QHBoxLayout()
+        forceModuleSelectionBox.setLayout(forceModuleSelectionBoxLayout)
+        self.advancedOptionsContainerLayout.addWidget(forceModuleSelectionBox)
+        
+        forceModuleSelectionLabel = QLabel()
+        forceModuleSelectionLabel.setText("Force Module")
+        forceModuleSelectionBoxLayout.addWidget(forceModuleSelectionLabel)
+        
         self.forceModuleSelection = QComboBox()
-        self.forceModuleSelection.setMaximumHeight(30)
         self.forceModuleSelection.addItem("none")
         self.forceModuleSelection.addItem("ffmpeg")
         self.forceModuleSelection.addItem("pillow")
         self.forceModuleSelection.addItem("text")
-        self.advancedOptionsContainerLayout.addWidget(self.forceModuleSelection)
+        forceModuleSelectionBoxLayout.addWidget(self.forceModuleSelection)
         
         ##Loading Bar
         self.loadingBar = QProgressDialog()
