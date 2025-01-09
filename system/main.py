@@ -85,7 +85,7 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
                     globals.update(errorInModule="ffmpeg")
                     return
                 thread = threading.Thread(target=moduel_ffmpeg.convert(pathToFile, pathToOutput))
-            case Modules.PILLOW: #pillow as fallback for ffmpeg for images
+            case Modules.PILLOW:
                 if not moduel_ffmpeg.checkDependencies():
                     print("error finding error module")
                     globals.update(finishedType=FinishedType.MODULENOTFOUNDERROR)
@@ -124,10 +124,10 @@ def getFileType(path):
     return os.path.splitext(os.path.basename(path))[1][1:]
 
 def getModules(format):
-    if module_pillow.formatSupported(format):
-        return Modules.PILLOW
-    elif moduel_ffmpeg.formatSupported(format):
+    if moduel_ffmpeg.formatSupported(format):
         return Modules.FFMPEG
+    elif module_pillow.formatSupported(format):
+        return Modules.PILLOW
     elif module_text.formatSupported(format):
         return Modules.TEXT
     
