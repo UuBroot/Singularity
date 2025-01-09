@@ -26,9 +26,13 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
     ##Check permissions
     if not checkPermissionForFile(pathToFile):
         print("no permission to read file")
+        globals.update(finishedType=FinishedType.NOPERMISSION)
+        return
         
     if not checkPermissionForFile(pathToOutput):
         print("no permission to write file")
+        globals.update(finishedType=FinishedType.NOPERMISSION)
+        return
     
     formatOfFile = getFileType(pathToFile)
     formatToConvertTo = getFileType(pathToOutput)

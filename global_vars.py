@@ -7,6 +7,7 @@ class FinishedType(Enum):
     WRONGCOMBINATION = 3
     FILENOTSUPPORTED = 4
     MODULENOTFOUNDERROR = 5
+    NOPERMISSION = 6
     
 globals = {
     "current_percentage": 0.0,
