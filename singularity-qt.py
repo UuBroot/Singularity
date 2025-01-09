@@ -10,7 +10,9 @@ from ui_system.ConvertionThread import ConvertionThread
 from ui_system.LoadingBarThread import LoadingBarThread
 
 from global_vars import globals, FinishedType
-    
+
+from ui_system.FfmpegNotInstalledPopup import FfmpegNotInstalledPopup
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -208,12 +210,20 @@ class MainWindow(QMainWindow):
                 self.messageLabel.setText("Wrong combination of file used and format to convert to")
             case FinishedType.FILENOTSUPPORTED:
                 self.messageLabel.setText("one of the filetypes is not supported")
+            case FinishedType.MODULENOTFOUNDERROR:
+                try:
+                    self.messageLabel.setText("Module not found:",str(globals.get("errorInModule")))
+                except:
+                    self.messageLabel.setText("Module not found")
+                print(globals.get("errorInModule"))
+                if globals.get("errorInModule") == "ffmpeg":
+                    popup = FfmpegNotInstalledPopup()
+                    popup.show()
             case _:
                 self.messageLabel.setText("Unknown error")
             
     def export(self):
         if self.pathOfExportField.text() != "" and self.filePathField.text() != "":
-            print(self.forceModuleSelection.currentText())
             if self.forceModuleSelection.currentText() == "none":
                 self.worker_thread = ConvertionThread(self.filePathField.text(), self.pathOfExportField.text())
             else:
