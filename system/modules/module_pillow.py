@@ -20,8 +20,6 @@ class Pillow(Module):
             print(f"Error converting {filepath} to {output}: {e}")
             self.fallBackToFfmpeg(filepath, output)
             
-            
-
     def checkDependencies(self)-> bool:
         return True
     
