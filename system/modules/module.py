@@ -8,3 +8,7 @@ class Module():
 
     def convert(self, filepath: str, output: str):
         print("module error")
+
+    def checkDependencies(self)-> bool:
+        print("module error")
+        return False

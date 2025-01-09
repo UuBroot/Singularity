@@ -6,8 +6,10 @@ class FinishedType(Enum):
     NOTAVALIDFILE = 2
     WRONGCOMBINATION = 3
     FILENOTSUPPORTED = 4
+    MODULENOTFOUNDERROR = 5
     
 globals = {
     "current_percentage": 0.0,
-    "finishedType": FinishedType.CANCELED
+    "finishedType": FinishedType.CANCELED,
+    "errorInModule": ""
 }

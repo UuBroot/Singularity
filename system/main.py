@@ -20,7 +20,7 @@ class Modules(Enum):
     FFMPEG = "ffmpeg"
     TEXT = "text"
     
-def convert(pathToFile:str, pathToOutput:str, type = None):    
+def convert(pathToFile:str, pathToOutput:str, type = None):
     formatOfFile = getFileType(pathToFile)
     formatToConvertTo = getFileType(pathToOutput)
     
@@ -79,10 +79,25 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
         
         match(moduleToUse):
             case Modules.FFMPEG:
+                if not moduel_ffmpeg.checkDependencies():
+                    print("ffmpeg not installed")
+                    globals.update(finishedType=FinishedType.MODULENOTFOUNDERROR)
+                    globals.update(errorInModule="ffmpeg")
+                    return
                 thread = threading.Thread(target=moduel_ffmpeg.convert(pathToFile, pathToOutput))
             case Modules.PILLOW: #pillow as fallback for ffmpeg for images
+                if not moduel_ffmpeg.checkDependencies():
+                    print("error finding error module")
+                    globals.update(finishedType=FinishedType.MODULENOTFOUNDERROR)
+                    globals.update(errorInModule="pillow")
+                    return
                 thread = threading.Thread(target=module_pillow.convert(pathToFile, pathToOutput))
             case Modules.TEXT:
+                if not moduel_ffmpeg.checkDependencies():
+                    print("error finding text module")
+                    globals.update(finishedType=FinishedType.MODULENOTFOUNDERROR)
+                    globals.update(errorInModule="text")
+                    return
                 thread = threading.Thread(target=module_text.convert(pathToFile, pathToOutput))
             case _:
                 print("novalid")

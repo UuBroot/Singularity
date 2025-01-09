@@ -16,6 +16,9 @@ class Text(Module):
         )
         super().__init__(supportedFormats)
 
+    def checkDependencies(self)-> bool:
+        return True
+
     def convert(self, filepath: str, output: str):
         fromFormat = filepath.split(".")[-1]
         toFormat = output.split(".")[-1]

@@ -11,6 +11,9 @@ class FFMPEG(Module):
         )
         super().__init__(supportedFormats)
 
+    def checkDependencies(self)-> bool:
+        return self.isFfmpegInstalled()
+
     def convert(self, filepath: str, output: str):       
         ##Checks if ffmpeg is installed
         if not self.isFfmpegInstalled():

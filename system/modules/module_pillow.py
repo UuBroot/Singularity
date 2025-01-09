@@ -17,3 +17,6 @@ class Pillow(Module):
         except Exception as e:
             print(f"Error converting {filepath} to {output}: {e}")
             globals.update(finishedType=FinishedType.WRONGCOMBINATION)
+
+    def checkDependencies(self)-> bool:
+        return True
