@@ -30,6 +30,11 @@ class MainWindow(QMainWindow):
         pathOfFileRow.setLayout(pathOfFileRowLayout)
         self.global_layout.addWidget(pathOfFileRow)
         pathOfFileRow.setMaximumHeight(50)
+        
+        #PathOfFileLabel
+        pathOfFileLabel = QLabel()
+        pathOfFileLabel.setText("From:")
+        pathOfFileRowLayout.addWidget(pathOfFileLabel)
 
         #PathOfFileToConvertField
         self.filePathField = QLineEdit()
@@ -43,6 +48,23 @@ class MainWindow(QMainWindow):
         path_of_file_select_button.clicked.connect(self.select_input_path)
         pathOfFileRowLayout.addWidget(path_of_file_select_button)
 
+        ##Arrow Down
+        #ArrowDownRow
+        arrow_down_row = QWidget()
+        arrow_down_layout = QHBoxLayout()
+        arrow_down_row.setLayout(arrow_down_layout)
+        
+        #Export Button
+        arrow_down_label = QLabel()
+        arrow_down_icon = QIcon.fromTheme("go-down")
+        arrow_down_label.setPixmap(arrow_down_icon.pixmap(32, 32))
+        arrow_down_label.setAlignment(Qt.AlignCenter)
+        arrow_down_label.mousePressEvent = self.export
+        arrow_down_label.setCursor(Qt.PointingHandCursor)
+        arrow_down_layout.addWidget(arrow_down_label)
+        
+        self.global_layout.addWidget(arrow_down_row)
+        
         ##PathOfExportRow
         pathOfExportRow = QWidget()
         pathOfExportLayout = QHBoxLayout()
@@ -50,6 +72,11 @@ class MainWindow(QMainWindow):
         self.global_layout.addWidget(pathOfExportRow)
         pathOfExportRow.setMaximumHeight(50)
 
+        #PathOfExportLabel
+        pathOfExportLabel = QLabel()
+        pathOfExportLabel.setText("To:")
+        pathOfExportLayout.addWidget(pathOfExportLabel)
+        
         #PathOfExportField
         self.pathOfExportField = QLineEdit()
         self.pathOfExportField.setPlaceholderText("Path to export")
@@ -61,27 +88,6 @@ class MainWindow(QMainWindow):
         path_of_export_select_button.setIcon(path_of_export_select_button_icon)
         path_of_export_select_button.clicked.connect(self.select_export_path)
         pathOfExportLayout.addWidget(path_of_export_select_button)
-        
-        ##Conversion Buttons
-        conversionButtonRow = QWidget()
-        conversionButtonRowLayout = QHBoxLayout()
-        conversionButtonRow.setLayout(conversionButtonRowLayout)
-        conversionButtonRow.setMaximumHeight(50)
-
-        #Cancel Convertion Button
-        cancelConvertionButton = QPushButton()
-        cancelConvertionButton.setText("Cancel")
-        cancelConvertionButton.clicked.connect(self.cancelConvertion)
-        conversionButtonRowLayout.addWidget(cancelConvertionButton)
-        
-        #ExportButton
-        export_button = QPushButton()
-        export_button_icon = QIcon.fromTheme("go-next")
-        export_button.setIcon(export_button_icon)
-        export_button.clicked.connect(self.export)
-        conversionButtonRowLayout.addWidget(export_button)
-        
-        self.global_layout.addWidget(conversionButtonRow)
         
         ##AdvancedOptionsToggleBox
         advancedOptionsRow = QWidget()
@@ -132,8 +138,16 @@ class MainWindow(QMainWindow):
         self.loadingBar.setCancelButton(None)
         self.global_layout.addWidget(self.loadingBar)
         
+        #Cancel Convertion Button
+        self.cancelConvertionButton = QPushButton()
+        self.cancelConvertionButton.setText("Cancel")
+        self.cancelConvertionButton.clicked.connect(self.cancelConvertion)
+        self.cancelConvertionButton.hide()
+        self.global_layout.addWidget(self.cancelConvertionButton)
+        
         ##Message
         self.messageLabel = QLabel()
+        self.messageLabel.setText("Press the arrow to convert")
         self.messageLabel.setMaximumHeight(20)
         self.global_layout.addWidget(self.messageLabel)
         
@@ -187,8 +201,8 @@ class MainWindow(QMainWindow):
     def convertationFinished(self):
         self.updateLoadingBarThread.terminate()
         self.resetLoadingBar()
-        
         self.setFinishedMessage()
+        self.cancelConvertionButton.hide()
     
     def cancelConvertion(self):
         self.worker_thread.terminate()
@@ -197,6 +211,7 @@ class MainWindow(QMainWindow):
         
         globals.update(finishedType=FinishedType.CANCELED)
         self.setFinishedMessage()
+        self.cancelConvertionButton.hide()
         
     def setFinishedMessage(self):
         match globals.get("finishedType"):
@@ -224,7 +239,7 @@ class MainWindow(QMainWindow):
             case _:
                 self.messageLabel.setText("Unknown error")
             
-    def export(self):
+    def export(self, event):
         if self.pathOfExportField.text() != "" and self.filePathField.text() != "":
             if self.forceModuleSelection.currentText() == "none":
                 self.worker_thread = ConvertionThread(self.filePathField.text(), self.pathOfExportField.text())
@@ -236,6 +251,7 @@ class MainWindow(QMainWindow):
         ##Threading
         self.worker_thread.finished.connect(self.convertationFinished)
         
+        self.cancelConvertionButton.show()
         self.worker_thread.start()
         
         self.messageLabel.setText("Converting...")
