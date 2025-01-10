@@ -25,15 +25,19 @@ class Modules(Enum):
 def convert(pathToFile:str, pathToOutput:str, type = None):
     ##Check permissions
     if not checkPermissionForFile(pathToFile):
-        print("no permission to read file")
-        givePermissionToFile(pathToFile, convert, pathToFile, pathToOutput, type)
-        globals.update(finishedType=FinishedType.NOPERMISSION)
+        try:
+            givePermissionToFile(pathToFile, convert, pathToFile, pathToOutput, type)
+        except:
+            print("no permission to read file")
+            globals.update(finishedType=FinishedType.NOPERMISSION)
         return
         
     if not checkPermissionForFolder(pathToOutput):
-        print("no permission to write file")
-        givePermissionToFolder(pathToOutput, convert, pathToFile, pathToOutput, type)
-        globals.update(finishedType=FinishedType.NOPERMISSION)
+        try:
+            givePermissionToFolder(pathToOutput, convert, pathToFile, pathToOutput, type)
+        except:
+            print("no permission to write file")
+            globals.update(finishedType=FinishedType.NOPERMISSION)
         return
     
     formatOfFile = getFileType(pathToFile)
