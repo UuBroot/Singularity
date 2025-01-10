@@ -219,6 +219,8 @@ class MainWindow(QMainWindow):
                 if globals.get("errorInModule") == "ffmpeg":
                     popup = FfmpegNotInstalledPopup()
                     popup.show()
+            case FinishedType.NOPERMISSION:
+                self.messageLabel.setText("No permission")
             case _:
                 self.messageLabel.setText("Unknown error")
             

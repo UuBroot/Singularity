@@ -5,6 +5,8 @@ import threading
 
 from global_vars import globals, FinishedType
 
+from system.permissionChecker import checkPermissionForFile, givePermissionToFile, givePermissionToFolder, checkPermissionForFolder
+
 ### Pillow ###
 from system.modules.module_pillow import Pillow
 module_pillow = Pillow()
@@ -21,6 +23,23 @@ class Modules(Enum):
     TEXT = "text"
     
 def convert(pathToFile:str, pathToOutput:str, type = None):
+    ##Check permissions
+    if not checkPermissionForFile(pathToFile):
+        try:
+            givePermissionToFile(pathToFile, convert, pathToFile, pathToOutput, type)
+        except:
+            print("no permission to read file")
+            globals.update(finishedType=FinishedType.NOPERMISSION)
+        return
+        
+    if not checkPermissionForFolder(pathToOutput):
+        try:
+            givePermissionToFolder(pathToOutput, convert, pathToFile, pathToOutput, type)
+        except:
+            print("no permission to write file")
+            globals.update(finishedType=FinishedType.NOPERMISSION)
+        return
+    
     formatOfFile = getFileType(pathToFile)
     formatToConvertTo = getFileType(pathToOutput)
     
