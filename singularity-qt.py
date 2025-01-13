@@ -236,6 +236,8 @@ class MainWindow(QMainWindow):
                     popup.show()
             case FinishedType.NOPERMISSION:
                 self.messageLabel.setText("No permission")
+            case FinishedType.FILECORRUPT:
+                self.messageLabel.setText("The file you are trying to read is corrupted")
             case _:
                 self.messageLabel.setText("Unknown error")
             

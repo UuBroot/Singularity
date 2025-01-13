@@ -8,6 +8,7 @@ class FinishedType(Enum):
     FILENOTSUPPORTED = 4
     MODULENOTFOUNDERROR = 5
     NOPERMISSION = 6
+    FILECORRUPT = 7
     
 globals = {
     "current_percentage": 0.0,
