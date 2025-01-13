@@ -29,6 +29,9 @@ class FfmpegNotInstalledPopup(QMessageBox):
         self.exec()
         
     def open_ffmpeg_website(self, button):
+        if button.text() == "Cancel":
+            print("cancled ffmpeg install")
+            return
         match (platform.system()):
             case "Windows":
                 subprocess.run(["powershell", "Start-Process", "winget", "-ArgumentList", "'install --id=Gyan.FFmpeg -e'", "-Verb", "RunAs"])
