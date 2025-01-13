@@ -31,7 +31,7 @@ class FfmpegNotInstalledPopup(QMessageBox):
     def open_ffmpeg_website(self, button):
         match (platform.system()):
             case "Windows":
-                webbrowser.open("https://ffmpeg.org/download.html")
+                subprocess.run(["powershell", "Start-Process", "winget", "-ArgumentList", "'install --id=Gyan.FFmpeg -e'", "-Verb", "RunAs"])
             case "Darwin":
                 if subprocess.run(["which", "brew"], capture_output=True).returncode != 0:
                     print("brew not installed")
