@@ -40,8 +40,8 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
             globals.update(finishedType=FinishedType.NOPERMISSION)
         return
     
-    formatOfFile = getFileType(pathToFile)
-    formatToConvertTo = getFileType(pathToOutput)
+    formatOfFile = getFileType(pathToFile).lower()
+    formatToConvertTo = getFileType(pathToOutput).lower()
     
     moduleForFile = getModules(formatOfFile)
     moduleForConversion = getModules(formatToConvertTo)
