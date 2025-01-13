@@ -10,16 +10,18 @@ class FfmpegNotInstalledPopup(QMessageBox):
         self.setWindowTitle("FFmpeg Not Installed")
         self.setStandardButtons(QMessageBox.Cancel)
         self.button(QMessageBox.Cancel).clicked.connect(self.close)
-        self.addButton("Install FFmpeg using brew", QMessageBox.ActionRole)
         self.buttonClicked.connect(self.open_ffmpeg_website)
 
         match (platform.system()):
             case "Windows":
                 self.setText("FFmpeg is not installed on your system. Please use Winget to install it.\n\nwinget install --id=Gyan.FFmpeg  -e")
+                self.addButton("Install FFmpeg using winget", QMessageBox.ActionRole)
             case "Darwin":
                 self.setText("FFmpeg is not installed on your system. Please use Homebrew to install it.\n\nbrew install ffmpeg")
+                self.addButton("Install FFmpeg using brew", QMessageBox.ActionRole)
             case "Linux":
                 self.setText("FFmpeg is not installed on your system. Please use your package manager to install it.")
+                self.addButton("Install FFmpeg using brew", QMessageBox.ActionRole)
             case _:
                 self.setText("FFmpeg is not installed on your system. Please install it to continue.")
 
@@ -27,10 +29,6 @@ class FfmpegNotInstalledPopup(QMessageBox):
         self.exec()
         
     def open_ffmpeg_website(self, button):
-        if button.text() != "Install FFmpeg using brew":
-            print("button text:",button.text())
-            print("Cancel")
-            return
         match (platform.system()):
             case "Windows":
                 webbrowser.open("https://ffmpeg.org/download.html")
