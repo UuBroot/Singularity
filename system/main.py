@@ -62,7 +62,10 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
             case _:
                 print("module does not exist")
                 globals.update(finishedType=FinishedType.WRONGCOMBINATION)
-
+    else:
+        globals.update(finishedType=FinishedType.FILENOTSUPPORTED)
+        return
+    
     pathToOutput_parts = pathToOutput.split("/") # Split the path into an array and remove the last element
     pathToOutputWithoutFile = "/".join(pathToOutput_parts[:-1])
     if os.path.isfile(pathToFile) and os.path.isdir(pathToOutputWithoutFile):##checks if the input file exists and the output files directory exists
