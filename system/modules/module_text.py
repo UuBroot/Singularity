@@ -73,6 +73,18 @@ class Text(Module):
                     return yaml.safe_load(file)
                 case "xml":
                     return xmltodict.parse(str(file.read()))
+                case "csv":
+                    reader = csv.DictReader(file)
+                    dict = {}
+                    for row in reader:
+                        for key, value in row.items():
+                            if key in dict:
+                                if not isinstance(dict[key], list):
+                                    dict[key] = [dict[key]]
+                                dict[key].append(value)
+                            else:
+                                dict[key] = value
+                    return dict
                 case _:
                     globals.update(finishedType=FinishedType.FILENOTSUPPORTED)
                     return
