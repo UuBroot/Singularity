@@ -24,6 +24,7 @@ class Text(Module):
 
         try:
             data: Dict = self.readFile(filepath, fromFormat)
+            
             if type(data) != type({}):#if it isnt a dictionary
                 print("error reading file")
                 return
