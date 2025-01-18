@@ -224,7 +224,7 @@ class MainWindow(QMainWindow):
             case FinishedType.WRONGCOMBINATION:
                 self.messageLabel.setText("Wrong combination of file used and format to convert to")
             case FinishedType.FILENOTSUPPORTED:
-                self.messageLabel.setText("one of the filetypes is not supported")
+                self.messageLabel.setText("One of the filetypes is not supported")
             case FinishedType.MODULENOTFOUNDERROR:
                 try:
                     self.messageLabel.setText("Module not found:",str(globals.get("errorInModule")))
@@ -236,6 +236,8 @@ class MainWindow(QMainWindow):
                     popup.show()
             case FinishedType.NOPERMISSION:
                 self.messageLabel.setText("No permission")
+            case FinishedType.FILECORRUPT:
+                self.messageLabel.setText("The file you are trying to read is corrupted")
             case _:
                 self.messageLabel.setText("Unknown error")
             
