@@ -62,6 +62,7 @@ def convert(pathToFile:str, pathToOutput:str, type = None):
             case _:
                 print("module does not exist")
                 globals.update(finishedType=FinishedType.WRONGCOMBINATION)
+                return
     
     pathToOutput_parts = pathToOutput.split("/") # Split the path into an array and remove the last element
     pathToOutputWithoutFile = "/".join(pathToOutput_parts[:-1])
