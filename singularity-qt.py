@@ -1,19 +1,22 @@
-import time
+import os
 import sys
-import threading
 from PySide6.QtWidgets import *
+from typing import List
 from PySide6.QtGui import *
 from PySide6.QtCore import *
 
 from ui_system.dragDropWidget import DragDropWidget
-from ui_system.ConvertionThread import ConvertionThread
-from ui_system.LoadingBarThread import LoadingBarThread
+from ui_system.Threads.ConvertionThread import ConvertionThread
+from ui_system.Threads.LoadingBarThread import LoadingBarThread
+from ui_system.Threads.WorkerThreadFinishCheckerThread import WorkerThreadFinishCheckerThread
 
 from global_vars import globals, FinishedType
 
 from ui_system.FfmpegNotInstalledPopup import FfmpegNotInstalledPopup
+from ui_system.InputFileWidget import InputFileWidget
 
 class MainWindow(QMainWindow):
+    workerThreads: List[ConvertionThread] = []
     def __init__(self):
         super().__init__()
                 
@@ -29,24 +32,23 @@ class MainWindow(QMainWindow):
         pathOfFileRowLayout = QHBoxLayout()
         pathOfFileRow.setLayout(pathOfFileRowLayout)
         self.global_layout.addWidget(pathOfFileRow)
-        pathOfFileRow.setMaximumHeight(50)
         
         #PathOfFileLabel
         pathOfFileLabel = QLabel()
         pathOfFileLabel.setText("From:")
         pathOfFileRowLayout.addWidget(pathOfFileLabel)
 
-        #PathOfFileToConvertField
-        self.filePathField = QLineEdit()
-        self.filePathField.setPlaceholderText("Path to file")
-        pathOfFileRowLayout.addWidget(self.filePathField)
-
-        #PathOfFileButton
-        path_of_file_select_button = QPushButton()
-        path_of_file_select_button_icon = QIcon.fromTheme("document-open")
-        path_of_file_select_button.setIcon(path_of_file_select_button_icon)
-        path_of_file_select_button.clicked.connect(self.select_input_path)
-        pathOfFileRowLayout.addWidget(path_of_file_select_button)
+        #PathOfFileColumn
+        self.pathOfFileColumn = QWidget()
+        self.pathOfFileColumnLayout = QVBoxLayout()
+        self.pathOfFileColumn.setLayout(self.pathOfFileColumnLayout)
+        pathOfFileRowLayout.addWidget(self.pathOfFileColumn)
+        
+        #Add a file button
+        addInputButton = QPushButton()
+        addInputButton.setText("Add File")
+        addInputButton.clicked.connect(self.addNewFileInputUsingPicker)
+        self.pathOfFileColumnLayout.addWidget(addInputButton)
 
         ##Arrow Down
         #ArrowDownRow
@@ -157,21 +159,30 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
 
         #DragNDrop Signal
-        dropArea.signal.connect(self.updateFilePathField)
+        dropArea.signal.connect(self.addFileInputWidget)
     
-    def updateFilePathField(self, message):
-        self.filePathField.setText(message)
-        message_parts = message.split("/") # Split the path into an array and remove the last element
-        self.pathOfExportField.setText("/".join(message_parts[:-1])+"/")
-        
-    ###File Selection
-    def select_input_path(self):
+    def addNewFileInputUsingPicker(self):
         path, _ = QFileDialog.getOpenFileName(
             self, "Select File", "", "All Files (*)"
         )
         if path:
-            self.updateFilePathField(path)
-
+            self.addFileInputWidget(path)
+    
+    def addFileInputWidget(self, path = None):
+        filePathFieldBox = InputFileWidget()
+        filePathFieldBox.fileSelected.connect(self.updateExportPath)
+        
+        if type(path) == type(""):
+            print(path)
+            filePathFieldBox.setText(path)
+            
+        self.pathOfFileColumnLayout.addWidget(filePathFieldBox)
+    
+    def updateExportPath(self, path):
+        path_parts = path.split("/")
+        self.pathOfExportField.setText("/".join(path_parts[:-1])+"/")
+        
+    ###File Selection
     def select_export_path(self):
         path, _ = QFileDialog.getSaveFileName(
             self, "Select File", "", "All Files (*)"
@@ -199,7 +210,7 @@ class MainWindow(QMainWindow):
 
     ###Convertion
     def convertationFinished(self):
-        self.updateLoadingBarThread.terminate()
+        #self.updateLoadingBarThread.terminate()
         self.resetLoadingBar()
         self.setFinishedMessage()
         self.cancelConvertionButton.hide()
@@ -242,28 +253,54 @@ class MainWindow(QMainWindow):
                 self.messageLabel.setText("Unknown error")
             
     def export(self, event):
-        if self.pathOfExportField.text() != "" and self.filePathField.text() != "":
-            if self.forceModuleSelection.currentText() == "none":
-                self.worker_thread = ConvertionThread(self.filePathField.text(), self.pathOfExportField.text())
-            else:
-                self.worker_thread = ConvertionThread(self.filePathField.text(), self.pathOfExportField.text(), self.forceModuleSelection.currentText())
-        else:
-            self.messageLabel.setText("Please fill all fields")
-            return
-        ##Threading
-        self.worker_thread.finished.connect(self.convertationFinished)
+        if self.pathOfExportField.text() != "":#check if export field is empty
+            if self.pathOfFileColumnLayout.count() <= 0:#check if files are used
+                self.messageLabel.setText("Please add at least one file")
+                return
         
+            all_empty = False
+            for i in range(self.pathOfFileColumnLayout.count()):
+                widget: InputFileWidget = self.pathOfFileColumnLayout.itemAt(i).widget() 
+                if isinstance(widget, InputFileWidget) and not os.path.exists(widget.getText()):#check if all files exists
+                    all_empty = True
+                    break
+
+            if all_empty:
+                self.messageLabel.setText("Please fill out all fields")
+                return
+        else:
+            self.messageLabel.setText("Please fill out all fields")
+            return
+
+        #Addes the worker threads for every file
+        for i in range(self.pathOfFileColumnLayout.count()):
+            widget: InputFileWidget = self.pathOfFileColumnLayout.itemAt(i).widget()
+            if isinstance(widget, InputFileWidget):
+                exportPath: str = self.pathOfExportField.text()+"export"+str(i)+"."+widget.getFormat()
+                if self.forceModuleSelection.currentText() == "none":#checks if a module is forced in advanced settings
+                    self.workerThreads.append(ConvertionThread(widget.getText(), exportPath)) 
+                else:
+                    self.workerThreads.append(ConvertionThread(widget.getText(), exportPath, self.forceModuleSelection.currentText()))
+
+        ##Threading
         self.cancelConvertionButton.show()
-        self.worker_thread.start()
+        
+        for workerThread in self.workerThreads:
+            workerThread.start()
+        
+        self.workerThreadChecker = WorkerThreadFinishCheckerThread(self.workerThreads)
+        self.workerThreadChecker.finished.connect(self.convertationFinished)
+        self.workerThreadChecker.start()
         
         self.messageLabel.setText("Converting...")
         globals.update(finishedType=FinishedType.FINISHED)
         
         self.loadingBar.show()
         
-        self.updateLoadingBarThread = LoadingBarThread()
-        self.updateLoadingBarThread.update_value.connect(self.updateLoadingBar)
-        self.updateLoadingBarThread.start()
+        #WIP
+        #self.updateLoadingBarThread = LoadingBarThread()
+        #self.updateLoadingBarThread.update_value.connect(self.updateLoadingBar)
+        #self.updateLoadingBarThread.start()
        
 if __name__ == "__main__":
     app = QApplication(sys.argv)
