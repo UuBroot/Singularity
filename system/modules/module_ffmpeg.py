@@ -36,7 +36,6 @@ class FFMPEG(Module):
                 stderr=subprocess.PIPE,
                 text=True
             )
-            print(self.convertion_id)
             print("Started ffmpeg")
 
             while process.poll() is None:

@@ -2,6 +2,8 @@ from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 from PySide6.QtCore import *
 
+from global_vars import globals
+
 class InputFileWidget(QWidget):
     fileSelected = Signal(str)
     def __init__(self):
@@ -22,11 +24,10 @@ class InputFileWidget(QWidget):
         openFileButton.clicked.connect(self.select_input_path)
         self.layout.addWidget(openFileButton)
         
-        #arrowlable
-        arrowLabel = QLabel()
-        arrowLabel_icon = QIcon.fromTheme("go-next")
-        arrowLabel.setPixmap(arrowLabel_icon.pixmap(16, 16))
-        self.layout.addWidget(arrowLabel)
+        #Seperator
+        seperator = QLabel()
+        seperator.setMaximumWidth(40)
+        self.layout.addWidget(seperator)
         
         #Format Field
         self.exportFormat = QLineEdit()
@@ -36,8 +37,9 @@ class InputFileWidget(QWidget):
         
         #delete widget button
         filePathField = QPushButton()
-        filePathField.setText("X")
-        filePathField.setMaximumWidth(30)
+        filePathField.setIcon(QIcon.fromTheme("window-close"))
+        filePathField.setFixedSize(QSize(32, 32))
+        filePathField.setStyleSheet("background: transparent; border: none;")
         filePathField.clicked.connect(self.delete_self)
         self.layout.addWidget(filePathField)
     
@@ -59,6 +61,14 @@ class InputFileWidget(QWidget):
             self.setText(path)
             
     def delete_self(self):
+        print(globals.get("finishedType"))
+        if globals.get("convertionInProgress"):
+            print("cancel the operation first")
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle("Error")
+            msg_box.setText("Please cancel the conversion before deleting a file from the list of files to convert")
+            msg_box.exec_()
+            return
         parent_layout = self.parentWidget().layout()
         if parent_layout:
             parent_layout.removeWidget(self)

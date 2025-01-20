@@ -13,5 +13,6 @@ class FinishedType(Enum):
 globals = {
     "finishedType": FinishedType.CANCELED,
     "errorInModule": "",
-    "percentageList": {}
+    "percentageList": {},
+    "convertionInProgress": False,
 }
