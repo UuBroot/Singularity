@@ -7,7 +7,6 @@ from PySide6.QtCore import *
 
 from ui_system.dragDropWidget import DragDropWidget
 from ui_system.Threads.ConvertionThread import ConvertionThread
-from ui_system.Threads.LoadingBarThread import LoadingBarThread
 from ui_system.Threads.WorkerThreadFinishCheckerThread import WorkerThreadFinishCheckerThread
 
 from global_vars import globals, FinishedType
@@ -296,11 +295,6 @@ class MainWindow(QMainWindow):
         globals.update(finishedType=FinishedType.FINISHED)
         
         self.loadingBar.show()
-        
-        #WIP
-        #self.updateLoadingBarThread = LoadingBarThread()
-        #self.updateLoadingBarThread.update_value.connect(self.updateLoadingBar)
-        #self.updateLoadingBarThread.start()
        
 if __name__ == "__main__":
     app = QApplication(sys.argv)
