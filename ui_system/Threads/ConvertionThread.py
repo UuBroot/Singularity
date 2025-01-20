@@ -2,7 +2,7 @@ from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 from PySide6.QtCore import *
 
-from system.main import convert
+from system.main import convert, terminate
 
 class ConvertionThread(QThread):
     filePathField: str
@@ -22,4 +22,5 @@ class ConvertionThread(QThread):
             print(e)
         
     def stop(self):
+        terminate()#from main
         self.terminate()

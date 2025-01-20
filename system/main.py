@@ -160,3 +160,8 @@ def getAllModulesToUse(format) -> list:
     if module_text.formatSupported(format):
         modules.append(Modules.TEXT)
     return modules
+
+def terminate():
+    module_pillow.terminate()
+    moduel_ffmpeg.terminate()
+    module_text.terminate()

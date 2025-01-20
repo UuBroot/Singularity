@@ -1,6 +1,7 @@
 from system.modules.module import Module
 import subprocess
 import sys
+import platform
 
 from global_vars import globals, FinishedType
 
@@ -14,6 +15,10 @@ class FFMPEG(Module):
 
     def checkDependencies(self)-> bool:
         return self.isFfmpegInstalled()
+
+    def terminate(self):
+        if platform.system() in ["Linux", "Darwin"]:
+            subprocess.run("killall ffmpeg", shell=True, check=True, capture_output=True)
 
     def convert(self, filepath: str, output: str):
         self.percentage = 0.0
