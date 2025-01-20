@@ -209,7 +209,6 @@ class MainWindow(QMainWindow):
 
     ###Convertion
     def convertationFinished(self):
-        #self.updateLoadingBarThread.terminate()
         self.resetLoadingBar()
         self.setFinishedMessage()
         self.cancelConvertionButton.hide()
