@@ -215,8 +215,8 @@ class MainWindow(QMainWindow):
         self.cancelConvertionButton.hide()
     
     def cancelConvertion(self):
-        self.worker_thread.terminate()
-        self.updateLoadingBarThread.terminate()
+        for worker_thread in self.workerThreads:
+            worker_thread.terminate()
         self.resetLoadingBar()
         
         globals.update(finishedType=FinishedType.CANCELED)
