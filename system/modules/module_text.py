@@ -19,12 +19,13 @@ class Text(Module):
         return True
 
     def convert(self, filepath: str, output: str):
+        self.percentage = 0.0
         fromFormat = filepath.split(".")[-1]
         toFormat = output.split(".")[-1]
 
         try:
             data: Dict = self.readFile(filepath, fromFormat)
-            
+            self.percentage = 50.0
             if type(data) != type({}):#if it isnt a dictionary
                 print("error reading file")
                 return
@@ -60,8 +61,9 @@ class Text(Module):
             print(e)
             globals.update(finishedType=FinishedType.FILECORRUPT)
             return
-                
+        
         globals.update(finishedType=FinishedType.FINISHED)
+        self.percentage = 100.0
 
     def readFile(self, path, format)-> Dict:
         with open(path, 'r') as file:

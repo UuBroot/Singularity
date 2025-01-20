@@ -1,4 +1,5 @@
 class Module():
+    percentage = 0.0
     def __init__(self, supportedFormats: tuple):
         self.supportedFormats = supportedFormats
         pass

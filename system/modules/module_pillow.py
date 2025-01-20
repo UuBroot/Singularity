@@ -12,10 +12,12 @@ class Pillow(Module):
         super().__init__(supportedFormats)
 
     def convert(self, filepath: str, output: str):
+        self.percentage = 0.0
         try:
             img_png = Image.open(filepath)
             img_png.save(output)
             globals.update(finishedType=FinishedType.FINISHED)
+            self.percentage = 100.0
         except Exception as e:
             print(f"Error converting {filepath} to {output}: {e}")
             self.fallBackToFfmpeg(filepath, output)

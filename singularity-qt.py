@@ -191,20 +191,12 @@ class MainWindow(QMainWindow):
             
     def toggle_advanced_options(self):
         self.advancedOptionsContainer.setVisible(not self.advancedOptionsContainer.isVisible())
-        
-    ###Loading Bar
-    def updateLoadingBar(self):
-        print("updating loading bar",globals.get("current_percentage"))
-        if globals.get("current_percentage") != 0.0:
-            self.loadingBar.setRange(0,100)
-            self.loadingBar.setValue(int(globals.get("current_percentage")))
     
     def resetLoadingBar(self):
         self.loadingBar.setRange(0,0)
         self.loadingBar.hide()
-        globals.update(current_percentage=0.0)
         
-    def hideLoadingBar(self):#needs to exist so that the bar gets hiden after first frame rendered
+    def hideLoadingBar(self):#needs to exist so that the bar gets hidden after first frame rendered
         self.loadingBar.hide()
 
     ###Convertion
@@ -217,7 +209,7 @@ class MainWindow(QMainWindow):
         for worker_thread in self.workerThreads:
             worker_thread.terminate()
         self.resetLoadingBar()
-        
+
         globals.update(finishedType=FinishedType.CANCELED)
         self.setFinishedMessage()
         self.cancelConvertionButton.hide()

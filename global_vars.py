@@ -11,7 +11,6 @@ class FinishedType(Enum):
     FILECORRUPT = 7
     
 globals = {
-    "current_percentage": 0.0,
     "finishedType": FinishedType.CANCELED,
     "errorInModule": ""
 }
