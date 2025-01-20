@@ -85,7 +85,7 @@ class InputFileWidget(QWidget):
             print("cancel the operation first")
             msg_box = QMessageBox()
             msg_box.setWindowTitle("Error")
-            msg_box.setText("Please cancel the conversion before deleting a file from the list of files to convert")
+            msg_box.setText("You need to cancel all operation before deleting a file from the list")
             msg_box.exec_()
             return
         parent_layout = self.parentWidget().layout()
