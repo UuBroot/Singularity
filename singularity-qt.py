@@ -207,7 +207,9 @@ class MainWindow(QMainWindow):
     
     def cancelConvertion(self):
         for worker_thread in self.workerThreads:
-            worker_thread.terminate()
+            worker_thread.stop()#uses custom termination
+        self.workerThreads = []
+
         self.resetLoadingBar()
 
         globals.update(finishedType=FinishedType.CANCELED)
