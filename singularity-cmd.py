@@ -1,6 +1,8 @@
 import sys
 import os
-import system.main
+from system.main import Main
+
+system = Main()
 
 if len(sys.argv) < 3 or len(sys.argv) > 4:
     print("Usage: python main.py <path to file> <path to output.format> <type of module to use ffmpeg/pillow/text")
@@ -14,4 +16,4 @@ except:
 input_file = os.path.abspath(sys.argv[1])
 output_file = os.path.abspath(sys.argv[2])
 
-system.main.convert(input_file, output_file, arg3)
+system.convert(input_file, output_file, arg3)

@@ -6,12 +6,13 @@ import platform
 from global_vars import globals, FinishedType
 
 class FFMPEG(Module):
-    percentage = 0.0
-    def __init__(self):
+    convertion_id: int
+    def __init__(self, convertion_id):
         supportedFormats = (
             "mp4", "webm", "flac", "apng", "asf", "ea","mp3","wav", "mov","a64","aac","ac3","adts","adx","afc","aiff","apm", "aptx","ast", "au","avi","avif","binka","bit","caf","dds_pipe","dfpwm","dvd","eac3","f4v","fits","flv","g722","genh","gif","h264","hevc", "ircam","ismv","ivf","latm","loas","m4v","mjpeg","moflex","m4a","mp2","mp3","mpeg","mtv","mulaw","mxf","nut","obu","oga","ogg","ogv","opus","psp","sbc","sox","spdif","spx","svs","tta","vag","vob","voc","w64","wav","webm","webp", "wtv", "wv"
         )
-        super().__init__(supportedFormats)
+        super().__init__(supportedFormats, convertion_id)
+        self.convertion_id = convertion_id
 
     def checkDependencies(self)-> bool:
         return self.isFfmpegInstalled()
@@ -21,7 +22,6 @@ class FFMPEG(Module):
             subprocess.run("killall ffmpeg", shell=True, check=True, capture_output=True)
 
     def convert(self, filepath: str, output: str):
-        self.percentage = 0.0
         ##Checks if ffmpeg is installed
         if not self.isFfmpegInstalled():
             print("no ffmpeg installed")
@@ -36,6 +36,7 @@ class FFMPEG(Module):
                 stderr=subprocess.PIPE,
                 text=True
             )
+            print(self.convertion_id)
             print("Started ffmpeg")
 
             while process.poll() is None:
@@ -47,17 +48,17 @@ class FFMPEG(Module):
                     if accLine.startswith("frame="):
                         currFrame = int(accLine.split("=")[1])
                         prc = (currFrame / totalFrames) * 100
-                        self.percentage = prc
+                        try:
+                            self.updatePercentage(prc)
+                        except Exception as e:
+                            print(e)
+                        print(globals.get("percentageList"))
         except Exception as e:
             print(e)
             sys.exit(1)
-            
-        globals.update(finishedType=FinishedType.FINISHED)
 
-    def updatePercentageList(self, val, index):
-        current_list = globals.get("percentageList")
-        current_list[index] = val
-        globals.update(percentageList=current_list)
+        self.updatePercentage(100.0)
+        globals.update(finishedType=FinishedType.FINISHED)
 
     def isFfmpegInstalled(self):
         try:

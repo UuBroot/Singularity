@@ -9,24 +9,26 @@ from typing import Dict
 from global_vars import globals, FinishedType
 
 class Text(Module):
-    def __init__(self):
+    convertion_id: int
+    def __init__(self, convertion_id):
         supportedFormats = (
             "json","yaml","yml","xml","csv"
         )
-        super().__init__(supportedFormats)
+        super().__init__(supportedFormats, convertion_id)
+        self.convertion_id = convertion_id
 
     def checkDependencies(self)-> bool:
         return True
 
     def convert(self, filepath: str, output: str):
-        self.percentage = 0.0
+        self.updatePercentage(0.0)
         fromFormat = filepath.split(".")[-1]
         toFormat = output.split(".")[-1]
 
         try:
             data: Dict = self.readFile(filepath, fromFormat)
-            self.percentage = 50.0
-            if type(data) != type({}):#if it isnt a dictionary
+            self.updatePercentage(50.0)
+            if type(data) != type({}):#if it isn't a dictionary
                 print("error reading file")
                 return
             match toFormat:
@@ -61,9 +63,9 @@ class Text(Module):
             print(e)
             globals.update(finishedType=FinishedType.FILECORRUPT)
             return
-        
+
         globals.update(finishedType=FinishedType.FINISHED)
-        self.percentage = 100.0
+        self.updatePercentage(100.0)
 
     def readFile(self, path, format)-> Dict:
         with open(path, 'r') as file:

@@ -191,31 +191,28 @@ class MainWindow(QMainWindow):
             
     def toggle_advanced_options(self):
         self.advancedOptionsContainer.setVisible(not self.advancedOptionsContainer.isVisible())
-    
-    def resetLoadingBar(self):
-        self.loadingBar.setRange(0,0)
-        self.loadingBar.hide()
         
     def hideLoadingBar(self):#needs to exist so that the bar gets hidden after first frame rendered
         self.loadingBar.hide()
 
     ###Convertion
-    def convertationFinished(self):
-        self.resetLoadingBar()
-        self.setFinishedMessage()
+    def reset(self):
+        self.loadingBar.hide()
+        globals.update(percentageList={})
+        self.workerThreads = []
         self.cancelConvertionButton.hide()
+        self.setFinishedMessage()
+
+    def convertationFinished(self):
+        self.reset()
     
     def cancelConvertion(self):
         for worker_thread in self.workerThreads:
             worker_thread.stop()#uses custom termination
-        self.workerThreads = []
-
-        self.resetLoadingBar()
 
         globals.update(finishedType=FinishedType.CANCELED)
-        self.setFinishedMessage()
-        self.cancelConvertionButton.hide()
-        
+        self.reset()
+
     def setFinishedMessage(self):
         match globals.get("finishedType"):
             case FinishedType.FINISHED:
@@ -270,9 +267,9 @@ class MainWindow(QMainWindow):
             if isinstance(widget, InputFileWidget):
                 exportPath: str = self.pathOfExportField.text()+"export"+str(i)+"."+widget.getFormat()
                 if self.forceModuleSelection.currentText() == "none":#checks if a module is forced in advanced settings
-                    self.workerThreads.append(ConvertionThread(widget.getText(), exportPath)) 
+                    self.workerThreads.append(ConvertionThread(widget.getText(), exportPath, None, i))
                 else:
-                    self.workerThreads.append(ConvertionThread(widget.getText(), exportPath, self.forceModuleSelection.currentText()))
+                    self.workerThreads.append(ConvertionThread(widget.getText(), exportPath, self.forceModuleSelection.currentText(), i))
 
         ##Threading
         self.cancelConvertionButton.show()

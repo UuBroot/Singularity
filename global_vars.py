@@ -12,5 +12,6 @@ class FinishedType(Enum):
     
 globals = {
     "finishedType": FinishedType.CANCELED,
-    "errorInModule": ""
+    "errorInModule": "",
+    "percentageList": {}
 }
