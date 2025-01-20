@@ -11,14 +11,14 @@ class ConvertionThread(QThread):
     filePathField: str
     pathOfExportField: str
     forceModule: str
-    id: int
-    def __init__(self, filePathField, pathOfExportField, forceModule = None, id = 0):
+    convertion_id: int
+    def __init__(self, filePathField, pathOfExportField, forceModule = None, convertion_id = 0):
         super().__init__()
-        self.main = Main(id)
+        self.main = Main(convertion_id)
         self.filePathField = filePathField
         self.pathOfExportField = pathOfExportField
         self.forceModule = forceModule
-        self.id = id
+        self.convertion_id = convertion_id
     
     def run(self):
         globals.update(convertionInProgress=True)
@@ -32,3 +32,6 @@ class ConvertionThread(QThread):
         globals.update(convertionInProgress=False)
         self.main.terminate()#terminate other processes
         self.terminate()#terminaes the thread itself
+
+    def getId(self):
+        return self.convertion_id

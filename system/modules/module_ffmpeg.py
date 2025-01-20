@@ -51,7 +51,6 @@ class FFMPEG(Module):
                             self.updatePercentage(prc)
                         except Exception as e:
                             print(e)
-                        print(globals.get("percentageList"))
         except Exception as e:
             print(e)
             sys.exit(1)

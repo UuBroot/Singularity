@@ -3,16 +3,25 @@ from PySide6.QtGui import *
 from PySide6.QtCore import *
 
 from global_vars import globals
+from ui_system.Threads.WorkerThreadPercentageUpdaterThread import WorkerThreadPercentageUpdaterThread
 
 class InputFileWidget(QWidget):
     fileSelected = Signal(str)
-    def __init__(self):
+    convertion_id: int
+    def __init__(self, convertion_id):
             super().__init__()
             self.initUI()
+            self.convertion_id = convertion_id
+
+            # percentage checker thread
+            self.percentageCheckerThread = WorkerThreadPercentageUpdaterThread(self.convertion_id)
+            self.percentageCheckerThread.percentageSignal.connect(self.setPercentage)
+            self.percentageCheckerThread.start()
+
     def initUI(self):
         self.layout = QHBoxLayout()
         self.setLayout(self.layout)
-        
+
         self.filePathField = QLineEdit()
         self.filePathField.setPlaceholderText("Path to file")
         self.layout.addWidget(self.filePathField)
@@ -34,7 +43,11 @@ class InputFileWidget(QWidget):
         self.exportFormat.setPlaceholderText("Export Format")
         self.exportFormat.setMaximumWidth(120)
         self.layout.addWidget(self.exportFormat)
-        
+
+        #percentage
+        self.percentage = QLabel()
+        self.layout.addWidget(self.percentage)
+
         #delete widget button
         filePathField = QPushButton()
         filePathField.setIcon(QIcon.fromTheme("window-close"))
@@ -46,6 +59,12 @@ class InputFileWidget(QWidget):
     def setText(self, text):
         self.filePathField.setText(text)
         self.fileSelected.emit(text)#sets the export path
+
+    def setPercentage(self, percentage):
+        if percentage == 0.0:
+            self.percentage.setText("")
+        else:
+            self.percentage.setText(str(int(percentage))+"%")
 
     def getText(self) -> str:
         return self.filePathField.text()
@@ -61,7 +80,7 @@ class InputFileWidget(QWidget):
             self.setText(path)
             
     def delete_self(self):
-        print(globals.get("finishedType"))
+
         if globals.get("convertionInProgress"):
             print("cancel the operation first")
             msg_box = QMessageBox()

@@ -168,14 +168,15 @@ class MainWindow(QMainWindow):
             self.addFileInputWidget(path)
     
     def addFileInputWidget(self, path = None):
-        filePathFieldBox = InputFileWidget()
-        filePathFieldBox.fileSelected.connect(self.updateExportPath)
+        widget_convertion_id = self.pathOfFileColumnLayout.count()
+        file_path_field_box = InputFileWidget(widget_convertion_id)
+        file_path_field_box.fileSelected.connect(self.updateExportPath)
         
         if type(path) == type(""):
             print(path)
-            filePathFieldBox.setText(path)
+            file_path_field_box.setText(path)
             
-        self.pathOfFileColumnLayout.addWidget(filePathFieldBox)
+        self.pathOfFileColumnLayout.addWidget(file_path_field_box)
     
     def updateExportPath(self, path):
         path_parts = path.split("/")
@@ -276,11 +277,11 @@ class MainWindow(QMainWindow):
         
         for workerThread in self.workerThreads:
             workerThread.start()
-        
+
         self.workerThreadChecker = WorkerThreadFinishCheckerThread(self.workerThreads)
         self.workerThreadChecker.finished.connect(self.convertationFinished)
         self.workerThreadChecker.start()
-        
+
         self.messageLabel.setText("Converting...")
         globals.update(finishedType=FinishedType.FINISHED)
         
