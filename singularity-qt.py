@@ -34,8 +34,18 @@ class MainWindow(QMainWindow):
         
         #PathOfFileLabel
         pathOfFileLabel = QLabel()
-        pathOfFileLabel.setText("From:")
+        pathOfFileLabel.setText("Files:")
         pathOfFileRowLayout.addWidget(pathOfFileLabel)
+
+        selected_files_area = QScrollArea()
+        selected_files_area.setWidgetResizable(True)
+
+        selected_files_area_widget = QWidget()
+        selected_files_area.setWidget(selected_files_area_widget)
+        pathOfFileRowLayout.addWidget(selected_files_area)
+
+        self.selected_files_area_layout = QVBoxLayout()
+        selected_files_area_widget.setLayout(self.selected_files_area_layout)
 
         #PathOfFileColumn
         self.pathOfFileColumn = QWidget()
@@ -171,12 +181,12 @@ class MainWindow(QMainWindow):
         widget_convertion_id = self.pathOfFileColumnLayout.count()
         file_path_field_box = InputFileWidget(widget_convertion_id)
         file_path_field_box.fileSelected.connect(self.updateExportPath)
-        
+        file_path_field_box.setFixedHeight(60)
         if type(path) == type(""):
             print(path)
             file_path_field_box.setText(path)
             
-        self.pathOfFileColumnLayout.addWidget(file_path_field_box)
+        self.selected_files_area_layout.addWidget(file_path_field_box)
     
     def updateExportPath(self, path):
         path_parts = path.split("/")
