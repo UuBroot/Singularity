@@ -80,7 +80,6 @@ class InputFileWidget(QWidget):
             self.setText(path)
             
     def delete_self(self):
-
         if globals.get("convertionInProgress"):
             print("cancel the operation first")
             msg_box = QMessageBox()
@@ -90,4 +89,7 @@ class InputFileWidget(QWidget):
             return
         parent_layout = self.parentWidget().layout()
         if parent_layout:
-            parent_layout.removeWidget(self)
+            try:
+                self.deleteLater()
+            except Exception as e:
+                print(e)
