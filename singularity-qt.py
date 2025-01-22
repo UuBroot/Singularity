@@ -259,8 +259,8 @@ class MainWindow(QMainWindow):
                 return
         
             all_empty = False
-            for i in range(self.pathOfFileColumnLayout.count()):
-                widget: InputFileWidget = self.pathOfFileColumnLayout.itemAt(i).widget() 
+            for i in range(self.selected_files_area_layout.count()):
+                widget: InputFileWidget = self.selected_files_area_layout.itemAt(i).widget()
                 if isinstance(widget, InputFileWidget) and not os.path.exists(widget.getText()):#check if all files exists
                     all_empty = True
                     break
@@ -273,10 +273,11 @@ class MainWindow(QMainWindow):
             return
 
         #Addes the worker threads for every file
-        for i in range(self.pathOfFileColumnLayout.count()):
-            widget: InputFileWidget = self.pathOfFileColumnLayout.itemAt(i).widget()
+        for i in range(self.selected_files_area_layout.count()):
+            widget = self.selected_files_area_layout.itemAt(i).widget()
+            print(widget)
             if isinstance(widget, InputFileWidget):
-                exportPath: str = self.pathOfExportField.text()+"export"+str(i)+"."+widget.getFormat()
+                exportPath: str = self.pathOfExportField.text()+"export"+str(i+1)+"."+widget.getFormat()
                 if self.forceModuleSelection.currentText() == "none":#checks if a module is forced in advanced settings
                     self.workerThreads.append(ConvertionThread(widget.getText(), exportPath, None, i))
                 else:
