@@ -171,6 +171,12 @@ class MainWindow(QMainWindow):
         dropArea.signal.connect(self.addFileInputWidget)
     
     def addNewFileInputUsingPicker(self):
+        if globals.get("convertionInProgress"):
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle("Error")
+            msg_box.setText("You need to cancel all operation before adding a file to the list")
+            msg_box.exec_()
+            return
         path, _ = QFileDialog.getOpenFileName(
             self, "Select File", "", "All Files (*)"
         )

@@ -24,7 +24,6 @@ class ConvertionThread(QThread):
         globals.update(convertionInProgress=True)
         try:
             self.main.convert(self.filePathField, self.pathOfExportField, self.forceModule)
-            globals.update(convertionInProgress=False)
         except Exception as e:
             print(e)
         

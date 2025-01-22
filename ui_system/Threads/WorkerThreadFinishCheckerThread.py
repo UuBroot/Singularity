@@ -1,5 +1,7 @@
 from PySide6.QtCore import *
 
+from global_vars import globals
+
 class WorkerThreadFinishCheckerThread(QThread):
     finished = Signal()
     workerThreads = []
@@ -10,4 +12,5 @@ class WorkerThreadFinishCheckerThread(QThread):
     def run(self):
         for thread in self.workerThreads:
                     thread.wait()
+        globals.update(convertionInProgress=False)
         self.finished.emit()
