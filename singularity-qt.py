@@ -175,7 +175,7 @@ class MainWindow(QMainWindow):
             msg_box = QMessageBox()
             msg_box.setWindowTitle("Error")
             msg_box.setText("You need to cancel all operation before adding a file to the list")
-            msg_box.exec_()
+            msg_box.exec()
             return
         path, _ = QFileDialog.getOpenFileName(
             self, "Select File", "", "All Files (*)"
@@ -184,7 +184,7 @@ class MainWindow(QMainWindow):
             self.addFileInputWidget(path)
     
     def addFileInputWidget(self, path = None):
-        widget_convertion_id = self.pathOfFileColumnLayout.count()
+        widget_convertion_id = self.selected_files_area_layout.count()
         file_path_field_box = InputFileWidget(widget_convertion_id)
         file_path_field_box.fileSelected.connect(self.updateExportPath)
         file_path_field_box.setFixedHeight(60)
@@ -259,29 +259,28 @@ class MainWindow(QMainWindow):
                 self.messageLabel.setText("Unknown error")
             
     def export(self, event):
-        if self.pathOfExportField.text() != "":#check if export field is empty
-            if self.pathOfFileColumnLayout.count() <= 0:#check if files are used
-                self.messageLabel.setText("Please add at least one file")
-                return
-        
-            all_empty = False
-            for i in range(self.selected_files_area_layout.count()):
-                widget: InputFileWidget = self.selected_files_area_layout.itemAt(i).widget()
-                if isinstance(widget, InputFileWidget) and not os.path.exists(widget.getText()):#check if all files exists
-                    all_empty = True
-                    break
-
-            if all_empty:
-                self.messageLabel.setText("Please fill out all fields")
-                return
-        else:
+        all_empty = False
+        number_of_files = 0
+        for i in range(self.selected_files_area_layout.count()):
+            widget: InputFileWidget = self.selected_files_area_layout.itemAt(i).widget()
+            if isinstance(widget, InputFileWidget):
+                    number_of_files += 1
+                    if not os.path.exists(widget.getText()):  # check if all files exists
+                        all_empty = True
+                        break
+        if number_of_files <= 0: #check if files are used
+            self.messageLabel.setText("Please add at least one file")
+            return
+        if all_empty:
+            self.messageLabel.setText("Please fill out all fields")
+            return
+        if self.pathOfExportField.text() == "":#check if export field is empty
             self.messageLabel.setText("Please fill out all fields")
             return
 
         #Addes the worker threads for every file
         for i in range(self.selected_files_area_layout.count()):
             widget = self.selected_files_area_layout.itemAt(i).widget()
-            print(widget)
             if isinstance(widget, InputFileWidget):
                 exportPath: str = self.pathOfExportField.text()+"export"+str(i+1)+"."+widget.getFormat()
                 if self.forceModuleSelection.currentText() == "none":#checks if a module is forced in advanced settings

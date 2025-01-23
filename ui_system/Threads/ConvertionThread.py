@@ -21,6 +21,7 @@ class ConvertionThread(QThread):
         self.convertion_id = convertion_id
     
     def run(self):
+        print(self.filePathField, self.pathOfExportField, self.forceModule, self.convertion_id)
         globals.update(convertionInProgress=True)
         try:
             self.main.convert(self.filePathField, self.pathOfExportField, self.forceModule)

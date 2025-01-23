@@ -12,7 +12,7 @@ class InputFileWidget(QWidget):
             super().__init__()
             self.initUI()
             self.convertion_id = convertion_id
-
+            
             # percentage checker thread
             self.percentageCheckerThread = WorkerThreadPercentageUpdaterThread(self.convertion_id)
             self.percentageCheckerThread.percentageSignal.connect(self.setPercentage)
@@ -87,6 +87,7 @@ class InputFileWidget(QWidget):
             msg_box.setText("You need to cancel all operation before deleting a file from the list")
             msg_box.exec_()
             return
+        self.percentageCheckerThread.terminate()
         parent_layout = self.parentWidget().layout()
         if parent_layout:
             try:
